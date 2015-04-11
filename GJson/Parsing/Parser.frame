@@ -1,0 +1,160 @@
+-->begin
+using System;
+using System.IO;
+
+-->namespace
+
+partial class Parser 
+{
+-->constants
+	const bool T = true;
+	const bool x = false;
+	const int minErrDist = 2;
+	
+	public Scanner scanner;
+	public Errors  errors;
+
+	public Token t;    // last recognized token
+	public Token la;   // lookahead token
+	int errDist = minErrDist;
+
+-->declarations
+
+	public Parser(Scanner scanner)
+	{
+		this.scanner = scanner;
+		errors = new Errors();
+	}
+
+	void SynErr (int n)
+	{
+		if (errDist >= minErrDist) errors.SynErr(la.line, la.col, n);
+		errDist = 0;
+	}
+
+	public void SemErr (string msg) 
+	{
+		if (errDist >= minErrDist) errors.SemErr(t.line, t.col, msg);
+		errDist = 0;
+	}
+	
+	void Get ()
+	{
+		for (;;)
+		{
+			t = la;
+			la = scanner.Scan();
+			if (la.kind <= maxT) { ++errDist; break; }
+-->pragmas
+			la = t;
+		}
+	}
+	
+	void Expect (int n)
+	{
+		if (la.kind==n) Get(); else { SynErr(n); }
+	}
+	
+	bool StartOf (int s)
+	{
+		return set[s, la.kind];
+	}
+	
+	void ExpectWeak (int n, int follow) 
+	{
+		if (la.kind == n) Get();
+		else 
+		{
+			SynErr(n);
+			while (!StartOf(follow)) Get();
+		}
+	}
+
+	bool WeakSeparator(int n, int syFol, int repFol) 
+	{
+		int kind = la.kind;
+		if (kind == n) {Get(); return true;}
+		else if (StartOf(repFol)) {return false;}
+		else
+		{
+			SynErr(n);
+			while (!(set[syFol, kind] || set[repFol, kind] || set[0, kind])) {
+				Get();
+				kind = la.kind;
+			}
+			return StartOf(syFol);
+		}
+	}
+	
+-->productions
+
+	public void Parse()
+	{
+		la = new Token();
+		la.val = "";		
+		Get();
+-->parseRoot
+	}
+	
+	static readonly bool[,] set = 
+	{
+-->initialization
+	};
+}
+
+class Errors
+{
+    const string _kEerrMsgFormat = "-- line {0} col {1}: {2}";
+
+    public int Count { get; private set; }
+    public TextWriter ErrorStream { get; private set; }
+
+    public Errors()
+    {
+        ErrorStream = new StringWriter();
+        Count = 0;
+    }
+
+	public virtual void SynErr (int line, int col, int n)
+	{
+		string s;
+		switch ( n )
+		{
+-->errors
+			default: s = "error " + n; break;
+		}
+		
+        ErrorStream.WriteLine( _kEerrMsgFormat, line, col, s );
+        Count++;
+	}
+
+    public virtual void SemErr( int line, int col, string s )
+    {
+        ErrorStream.WriteLine( _kEerrMsgFormat, line, col, s );
+        Count++;
+    }
+
+    public virtual void SemErr( string s )
+    {
+        ErrorStream.WriteLine( s );
+        Count++;
+    }
+
+    public virtual void Warning( int line, int col, string s )
+    {
+        ErrorStream.WriteLine( _kEerrMsgFormat, line, col, s );
+    }
+
+    public virtual void Warning( string s )
+    {
+        ErrorStream.WriteLine( s );
+    }
+}
+
+class FatalError : Exception
+{
+	public FatalError( string m ):
+		base( m )
+	{
+	}
+}
