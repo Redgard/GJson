@@ -15,13 +15,13 @@ namespace GJson
             {
                 case JsonType.Null:
 
-                    writer.Write( "null" );
+					writer.Write( StringConstants.Null );
 
                     break;
 
                 case JsonType.Boolean:
 
-                    writer.Write( ( _bool.GetValueOrDefault() ) ? "true" : "false" );
+					writer.Write( ( _bool.GetValueOrDefault() ) ? StringConstants.True : StringConstants.False );
 
                     break;
 
@@ -29,13 +29,13 @@ namespace GJson
 
                     if ( _string == null )
                     {
-                        writer.Write( "null" );
+						writer.Write( StringConstants.Null );
                     }
                     else
                     {
-                        writer.Write( "\"" );
+                        writer.Write( StringConstants.QuotationMark );
                         writer.Write( _string );
-                        writer.Write( "\"" );
+						writer.Write( StringConstants.QuotationMark );
                     }
 
                     break;
@@ -56,7 +56,7 @@ namespace GJson
 
                 case JsonType.Object:
 
-                    writer.Write( "{" );
+                    writer.Write( StringConstants.CurlyBracketOpen );
 
                     bool firstD = true;
 
@@ -64,25 +64,25 @@ namespace GJson
                     {
                         if ( !firstD )
                         {
-                            writer.Write( "," );
+                            writer.Write( StringConstants.Comma );
                         }
-                        writer.Write( "\"" );
+                        writer.Write( StringConstants.QuotationMark );
                         writer.Write( json.Key );
-                        writer.Write( "\"" );
-                        writer.Write( ":" );
+						writer.Write( StringConstants.QuotationMark );
+						writer.Write( StringConstants.Colon );
 
                         json.Value.WriteDefault( writer );
 
                         firstD = false;
                     }
 
-                    writer.Write( "}" );
+					writer.Write( StringConstants.CurlyBracketClose );
 
                     break;
 
                 case JsonType.Array:
 
-                    writer.Write( "[" );
+					writer.Write( StringConstants.SquareBracketOpen );
 
                     bool firstL = true;
 
@@ -90,7 +90,7 @@ namespace GJson
                     {
                         if ( !firstL )
                         {
-                            writer.Write( "," );
+							writer.Write( StringConstants.Comma );
                         }
 
                         json.WriteDefault( writer );
@@ -98,7 +98,7 @@ namespace GJson
                         firstL = false;
                     }
 
-                    writer.Write( "]" );
+					writer.Write( StringConstants.SquareBracketClose );
 
                     break;
             }

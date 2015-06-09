@@ -30,25 +30,25 @@ namespace GJson
 
         void WriteNull()
         {
-            Write( "null" );
+			Write( StringConstants.Null );
         }
 
         void WriteBoolean( bool value )
         {
-            Write( ( value ) ? "true" : "false" );
+			Write( ( value ) ? StringConstants.True : StringConstants.False );
         } 
         
         void WriteString( string value )
         {
             if ( value == null )
             {
-                Write( "null" );
+				Write( StringConstants.Null );
             }
             else
             {
-                Write( "\"" );
+				Write( StringConstants.QuotationMark );
                 Write( value );
-                Write( "\"" );
+				Write( StringConstants.QuotationMark );
             }
         }
 
@@ -61,7 +61,7 @@ namespace GJson
         {
             for ( int i = 0; i < _ident; ++i )
             {
-                Write( "\t" );
+                Write( StringConstants.Tab );
             }
         }
 
@@ -69,7 +69,7 @@ namespace GJson
         {
             if ( json.Count > 0 )
             {
-                Write( "{" );
+				Write( StringConstants.CurlyBracketOpen );
                 _ident++;
 
                 Write( Environment.NewLine );
@@ -81,14 +81,14 @@ namespace GJson
                 {
                     if ( !firstD )
                     {
-                        Write( "," );
+                        Write( StringConstants.Comma );
                         Write( Environment.NewLine );
                         WriteIdent();
                     }
 
-                    Write( "\"" );
+					Write( StringConstants.QuotationMark );
                     Write( jsonV.Key );
-                    Write( "\" : " );
+					Write( StringConstants.QuotationMark + StringConstants.Space + StringConstants.Colon );
 
                     if ( jsonV.Value.Count > 0 )
                     {
@@ -104,11 +104,11 @@ namespace GJson
                 Write( Environment.NewLine );
                 _ident--;
                 WriteIdent();
-                Write( "}" );
+				Write( StringConstants.CurlyBracketClose );
             }
             else
             {
-                Write( "{}" );
+				Write( StringConstants.CurlyBracketOpen + StringConstants.CurlyBracketClose );
             }
         }
 
@@ -116,7 +116,7 @@ namespace GJson
         {
             if ( json.Count > 0 )
             {
-                Write( "[" );
+				Write( StringConstants.SquareBracketOpen );
                 _ident++;
 
                 if ( !SingleLineArray )
@@ -131,7 +131,7 @@ namespace GJson
                 {
                     if ( !firstA )
                     {
-                        Write( "," );
+                        Write( StringConstants.Comma );
 
                         if ( !SingleLineArray )
                         {
@@ -153,11 +153,11 @@ namespace GJson
                 _ident--;
 
                 WriteIdent();
-                Write( "]" );
+				Write( StringConstants.SquareBracketClose );
             }
             else
             {
-                Write( "[]" );
+				Write( StringConstants.SquareBracketOpen + StringConstants.SquareBracketClose );
             }
         }
     }

@@ -153,12 +153,14 @@ namespace GJson
         public int IndexOf( JsonValue item )
         {
             ConvertToArray();
+
             return _list.IndexOf( item );
         }
 
         public void Insert( int index, JsonValue item )
         {
             ConvertToArray();
+
             _list.Insert( index, item );
         }
 
