@@ -21,5 +21,6 @@ Thumbs.db
 trace.txt
 obj/
 bin/
+packages/
 _ReSharper*/
 *.exe

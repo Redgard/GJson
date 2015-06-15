@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 using GJson;
 
+using Xunit;
+
 namespace GJsonTests
 {
-    class Tests
+    public partial class Tests
     {
         class myconverter : Converter
         {
@@ -104,38 +107,6 @@ namespace GJsonTests
 
         static void Main( string[] args )
         {
-            /*JsonValue v = new JsonValue();
-
-            v["a"] = 32;
-            v["d"]["a"] = "gfd";
-            v["e"]["a"] = "gfd";
-            v["e"]["b"] = 543.423;
-            v["e"]["c"] = false;
-            v["f"][0] = "gfd";
-            v["f"][1]["a"] = 543.423;
-            v["f"][1]["b"] = 43242342;
-            v["f"][1]["c"] = 1111111.2;
-            v["f"][2] = false;
-
-            var s = v.ToStringIdent();
-            Console.WriteLine( s );
-
-            v = JsonValue.Parse( s );
-
-            Console.WriteLine( "/////////" );
-
-            s = v.ToStringIdent();
-            Console.WriteLine( s );
-
-            var v = JsonValue.Parse( File.ReadAllText( "test.json" ) );
-            var s = v.ToStringIdent();
-            File.WriteAllText( "test_out.json", s );
-
-            v = JsonValue.Parse( File.ReadAllText( "test_out.json" ) );
-            s = v.ToStringIdent();
-            Console.WriteLine( s );
-            */
-
             var a = new A();
             var json = Serializator.Serialize( a );
 
