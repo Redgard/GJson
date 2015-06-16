@@ -1,107 +1,90 @@
 ﻿using System;
 using System.IO;
+using System.Globalization;
 
 namespace GJson
 {
-    public partial class JsonValue
-    {
-        public void WriteTo( TextWriter writer )
+	public class DefaultWriter : StringWriter, IJsonWriter
+	{
+		public DefaultWriter() :
+            base( CultureInfo.InvariantCulture )
         {
         }
 
-        void WriteDefault( TextWriter writer )
-        {
-            switch ( JsonType )
-            {
-                case JsonType.Null:
+		public void WriteNull()
+		{
+			Write( StringConstants.Null );
+		}
 
-					writer.Write( StringConstants.Null );
+		public void WriteBoolean( bool value )
+		{
+			Write( ( value ) ? StringConstants.True : StringConstants.False );
+		}
 
-                    break;
+		public void WriteString( string value )
+		{
+			if ( value == null )
+			{
+				Write( StringConstants.Null );
+			}
+			else
+			{
+				Write( StringConstants.QuotationMark );
+				Write( value );
+				Write( StringConstants.QuotationMark );
+			}
+		}
 
-                case JsonType.Boolean:
+		public void WriteNumber( double value )
+		{
+			Write( value );
+		}
 
-					writer.Write( ( _bool.GetValueOrDefault() ) ? StringConstants.True : StringConstants.False );
+		public void WriteObject( JsonValue value )
+		{
+			Write( StringConstants.CurlyBracketOpen );
 
-                    break;
+			bool firstD = true;
 
-                case JsonType.String:
+			foreach ( var json in value.AsObject )
+			{
+				if ( !firstD )
+				{
+					Write( StringConstants.Comma );
+				}
 
-                    if ( _string == null )
-                    {
-						writer.Write( StringConstants.Null );
-                    }
-                    else
-                    {
-                        writer.Write( StringConstants.QuotationMark );
-                        writer.Write( _string );
-						writer.Write( StringConstants.QuotationMark );
-                    }
+				Write( StringConstants.QuotationMark );
+				Write( json.Key );
+				Write( StringConstants.QuotationMark );
+				Write( StringConstants.Colon );
 
-                    break;
+				json.Value.Write( this );
 
-                case JsonType.Number:
+				firstD = false;
+			}
 
-                    if ( _int.HasValue )
-                    {
-                        writer.Write( _int.GetValueOrDefault() );
-                    }
-                    else
-                    {
-                        writer.Write( _float.GetValueOrDefault() );
-                    }
+			Write( StringConstants.CurlyBracketClose );
+		}
 
-                    break;
+		public void WriteArray( JsonValue value )
+		{
+			Write( StringConstants.SquareBracketOpen );
 
+			bool firstL = true;
 
-                case JsonType.Object:
+			foreach ( var json in value.AsArray )
+			{
+				if ( !firstL )
+				{
+					Write( StringConstants.Comma );
+				}
 
-                    writer.Write( StringConstants.CurlyBracketOpen );
+				json.Write( this );
 
-                    bool firstD = true;
+				firstL = false;
+			}
 
-                    foreach ( var json in _dict )
-                    {
-                        if ( !firstD )
-                        {
-                            writer.Write( StringConstants.Comma );
-                        }
-                        writer.Write( StringConstants.QuotationMark );
-                        writer.Write( json.Key );
-						writer.Write( StringConstants.QuotationMark );
-						writer.Write( StringConstants.Colon );
-
-                        json.Value.WriteDefault( writer );
-
-                        firstD = false;
-                    }
-
-					writer.Write( StringConstants.CurlyBracketClose );
-
-                    break;
-
-                case JsonType.Array:
-
-					writer.Write( StringConstants.SquareBracketOpen );
-
-                    bool firstL = true;
-
-                    foreach ( var json in _list )
-                    {
-                        if ( !firstL )
-                        {
-							writer.Write( StringConstants.Comma );
-                        }
-
-                        json.WriteDefault( writer );
-
-                        firstL = false;
-                    }
-
-					writer.Write( StringConstants.SquareBracketClose );
-
-                    break;
-            }
-        }
-    }
+			Write( StringConstants.SquareBracketClose );
+		}
+	}
 }

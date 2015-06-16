@@ -4,41 +4,28 @@ using System.IO;
 
 namespace GJson
 {
-    public class JsonIdentWriter : StringWriter
+    public class IdentWriter : StringWriter, IJsonWriter
     {
         int _ident = 0;
 
         bool SingleLineArray { set; get; }
 
-        public JsonIdentWriter():
+        public IdentWriter():
             base( CultureInfo.InvariantCulture )
         {
         }
 
-        public void WriteJson( JsonValue json )
-        {
-            switch ( json.JsonType )
-            {
-                case JsonType.Null: WriteNull(); break;
-                case JsonType.Boolean: WriteBoolean( json ); break;
-                case JsonType.String: WriteString( json ); break;
-                case JsonType.Number: WriteNumber( json ); break;
-                case JsonType.Object: WriteObject( json ); break;
-                case JsonType.Array: WriteArray( json ); break;
-            }
-        }
-
-        void WriteNull()
+		public void WriteNull()
         {
 			Write( StringConstants.Null );
         }
 
-        void WriteBoolean( bool value )
+		public void WriteBoolean( bool value )
         {
 			Write( ( value ) ? StringConstants.True : StringConstants.False );
-        } 
-        
-        void WriteString( string value )
+        }
+
+		public void WriteString( string value )
         {
             if ( value == null )
             {
@@ -52,7 +39,7 @@ namespace GJson
             }
         }
 
-        void WriteNumber( double value )
+		public void WriteNumber( double value )
         {
             Write( value );
         }
@@ -65,7 +52,7 @@ namespace GJson
             }
         }
 
-        void WriteObject( JsonValue json )
+		public void WriteObject( JsonValue json )
         {
             if ( json.Count > 0 )
             {
@@ -96,7 +83,7 @@ namespace GJson
                         WriteIdent();
                     }
 
-                    WriteJson( jsonV.Value );
+					jsonV.Value.Write( this );
 
                     firstD = false;
                 }
@@ -112,7 +99,7 @@ namespace GJson
             }
         }
 
-        void WriteArray( JsonValue json )
+		public void WriteArray( JsonValue json )
         {
             if ( json.Count > 0 )
             {
@@ -140,7 +127,7 @@ namespace GJson
                         }
                     }
 
-                    WriteJson( jsonV );
+					jsonV.Write( this );
 
                     firstA = false;
                 }
@@ -160,5 +147,5 @@ namespace GJson
 				Write( StringConstants.SquareBracketOpen + StringConstants.SquareBracketClose );
             }
         }
-    }
+	}
 }

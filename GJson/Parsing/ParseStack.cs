@@ -48,7 +48,7 @@ namespace GJson
         {
             _stack.Pop();
 
-            if ( typeof ( T ) == typeof ( string ) )
+            if ( typeof( T ) == typeof( string ) )
             {
                 _stack.Push( TrimQuotes( s ) );
             }
