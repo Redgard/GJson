@@ -25,7 +25,7 @@ namespace GJson
 		{
 			if ( value == null )
 			{
-				Write( StringConstants.Null );
+				WriteNull();
 			}
 			else
 			{

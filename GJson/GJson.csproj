@@ -43,8 +43,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IJsonWriter.cs" />
-    <Compile Include="JsonValue.cs" />
+    <Compile Include="JsonValue\Convertions.cs" />
+    <Compile Include="JsonValue\JsonType.cs" />
+    <Compile Include="JsonValue\JsonValue.cs" />
     <Compile Include="IdentWriter.cs" />
+    <Compile Include="JsonValue\Parse.cs" />
+    <Compile Include="JsonValue\Write.cs" />
     <Compile Include="Parsing\Parser.cs" />
     <Compile Include="Parsing\ParseStack.cs" />
     <Compile Include="Parsing\Scanner.cs" />
