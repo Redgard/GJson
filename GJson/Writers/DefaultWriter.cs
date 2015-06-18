@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Globalization;
 
 namespace GJson
@@ -11,17 +10,17 @@ namespace GJson
         {
         }
 
-		public void WriteNull()
+		public virtual void WriteNull()
 		{
 			Write( StringConstants.Null );
 		}
 
-		public void WriteBoolean( bool value )
+		public virtual void WriteBoolean( bool value )
 		{
 			Write( ( value ) ? StringConstants.True : StringConstants.False );
 		}
 
-		public void WriteString( string value )
+		public virtual void WriteString( string value )
 		{
 			if ( value == null )
 			{
@@ -35,12 +34,12 @@ namespace GJson
 			}
 		}
 
-		public void WriteNumber( double value )
+		public virtual void WriteNumber( double value )
 		{
 			Write( value );
 		}
 
-		public void WriteObject( JsonValue value )
+		public virtual void WriteObject( JsonValue value )
 		{
 			Write( StringConstants.CurlyBracketOpen );
 
@@ -66,7 +65,7 @@ namespace GJson
 			Write( StringConstants.CurlyBracketClose );
 		}
 
-		public void WriteArray( JsonValue value )
+		public virtual void WriteArray( JsonValue value )
 		{
 			Write( StringConstants.SquareBracketOpen );
 
