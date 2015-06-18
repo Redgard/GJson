@@ -15,9 +15,20 @@ CHARACTERS
 	
 TOKENS
 
-    number = [ '-' ] ('0' | digitH { digit }) [ '.' { digit } ] [ ('e' | 'E') [ '+' | '-' ] digit { digit } ].
-    string = '"' { stringCh | '\\' escCh | "\\u" hexCh hexCh hexCh hexCh } '"'.
-	
+    Number = [ '-' ] ('0' | digitH { digit }) [ '.' { digit } ] [ ('e' | 'E') [ '+' | '-' ] digit { digit } ].
+    CString = '"' { stringCh | '\\' escCh | "\\u" hexCh hexCh hexCh hexCh } '"'.
+	Null = "null".
+	True = "true".
+	False = "false".
+	QuotationMark = "\"".
+	CurlyBracketOpen = "{".
+	CurlyBracketClose = "}".
+	SquareBracketOpen = "[".
+	SquareBracketClose = "]".
+	Colon = ":".
+	Comma = ",".
+	Tab = "\t".
+
 COMMENTS FROM "/*" TO "*/" NESTED
 COMMENTS FROM "//" TO lf
 	
@@ -28,32 +39,33 @@ PRODUCTIONS
 Json =
 	Value.
 
-String = string (. Replace<string>( t.val ); .).
+String = CString (. Push<String>( t.val ); .).
 	
-Object = (. ReplaceObject(); .)
-	'{' [ ItemList ] '}'.
+Object = (. PushEmpty(); .)
+	CurlyBracketOpen [ ObjectList ] CurlyBracketClose.
 
-ItemList =
-	Item { ',' Item }.
+ObjectList =
+	ObjectItem { Comma ObjectItem }.
 
-Item =
-	(. PushEmpty(); .) String
-	':' Value (. AddItemToObject(); .) .
+ObjectItem =
+	String Colon Value (. AddItemToObject(); .) .
 
-Array = (. ReplaceArray(); .)
-	'[' [ ValueList ] ']'.
+Array = (. PushEmpty(); .)
+	SquareBracketOpen [ ArrayList ] SquareBracketClose.
 
-ValueList =
-	Value (. AddItemToArray(); .)
-	{ ',' Value (. AddItemToArray(); .) }.
+ArrayList =
+	ArrayItem { Comma ArrayItem }.
 
-Value = (. PushEmpty(); .)
+ArrayItem = 
+	Value (. AddItemToArray(); .) .
+
+Value = 
 ( Object
- | Array
- | String
- | number (. Replace<double>( t.val ); .)
- | "true" (. Replace<bool>( t.val ); .)
- | "false" (. Replace<bool>( t.val ); .)
- | "null" (. ReplaceEmpty(); .) ) .
+	| Array
+	| String
+	| Number (. Push<Double>( t.val ); .)
+	| True (. Push<Boolean>( t.val ); .)
+	| False (. Push<Boolean>( t.val ); .)
+	| Null (. PushEmpty(); .) ) .
 
 END Json.

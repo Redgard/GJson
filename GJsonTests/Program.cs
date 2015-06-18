@@ -12,7 +12,7 @@ namespace GJsonTests
     {
         static void Main( string[] args )
         {
-			JsonValue json = new JsonValue();
+			JsonValue json = JsonValue.Parse( File.ReadAllText( "test.json" ) );
 
 			json["a"].Add( 1 );
 			json["a"].Add( 2 );

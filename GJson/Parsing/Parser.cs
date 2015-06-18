@@ -9,12 +9,23 @@ namespace GJson {
 partial class Parser 
 {
 	public const int _EOF = 0;
-	public const int _number = 1;
-	public const int _string = 2;
-	public const int maxT = 12;
+	public const int _Number = 1;
+	public const int _CString = 2;
+	public const int _Null = 3;
+	public const int _True = 4;
+	public const int _False = 5;
+	public const int _QuotationMark = 6;
+	public const int _CurlyBracketOpen = 7;
+	public const int _CurlyBracketClose = 8;
+	public const int _SquareBracketOpen = 9;
+	public const int _SquareBracketClose = 10;
+	public const int _Colon = 11;
+	public const int _Comma = 12;
+	public const int _Tab = 13;
+	public const int maxT = 14;
 
-	const bool T = true;
-	const bool x = false;
+	const bool _T = true;
+	const bool _x = false;
 	const int minErrDist = 2;
 	
 	public Scanner scanner;
@@ -97,13 +108,12 @@ partial class Parser
 	}
 
 	void Value() {
-		PushEmpty(); 
 		switch (la.kind) {
-		case 3: {
+		case 7: {
 			Object();
 			break;
 		}
-		case 7: {
+		case 9: {
 			Array();
 			break;
 		}
@@ -113,75 +123,77 @@ partial class Parser
 		}
 		case 1: {
 			Get();
-			Replace<double>( t.val ); 
+			Push<Double>( t.val ); 
 			break;
 		}
-		case 9: {
+		case 4: {
 			Get();
-			Replace<bool>( t.val ); 
+			Push<Boolean>( t.val ); 
 			break;
 		}
-		case 10: {
+		case 5: {
 			Get();
-			Replace<bool>( t.val ); 
+			Push<Boolean>( t.val ); 
 			break;
 		}
-		case 11: {
+		case 3: {
 			Get();
-			ReplaceEmpty(); 
+			PushEmpty(); 
 			break;
 		}
-		default: SynErr(13); break;
+		default: SynErr(15); break;
 		}
 	}
 
 	void String() {
 		Expect(2);
-		Replace<string>( t.val ); 
+		Push<String>( t.val ); 
 	}
 
 	void Object() {
-		ReplaceObject(); 
-		Expect(3);
-		if (la.kind == 2) {
-			ItemList();
-		}
-		Expect(4);
-	}
-
-	void ItemList() {
-		Item();
-		while (la.kind == 5) {
-			Get();
-			Item();
-		}
-	}
-
-	void Item() {
 		PushEmpty(); 
+		Expect(7);
+		if (la.kind == 2) {
+			ObjectList();
+		}
+		Expect(8);
+	}
+
+	void ObjectList() {
+		ObjectItem();
+		while (la.kind == 12) {
+			Get();
+			ObjectItem();
+		}
+	}
+
+	void ObjectItem() {
 		String();
-		Expect(6);
+		Expect(11);
 		Value();
 		AddItemToObject(); 
 	}
 
 	void Array() {
-		ReplaceArray(); 
-		Expect(7);
+		PushEmpty(); 
+		Expect(9);
 		if (StartOf(1)) {
-			ValueList();
+			ArrayList();
 		}
-		Expect(8);
+		Expect(10);
 	}
 
-	void ValueList() {
+	void ArrayList() {
+		ArrayItem();
+		while (la.kind == 12) {
+			Get();
+			ArrayItem();
+		}
+	}
+
+	void ArrayItem() {
 		Value();
 		AddItemToArray(); 
-		while (la.kind == 5) {
-			Get();
-			Value();
-			AddItemToArray(); 
-		}
 	}
 
 
@@ -198,8 +210,8 @@ partial class Parser
 	
 	static readonly bool[,] set = 
 	{
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x},
-		{x,T,T,T, x,x,x,T, x,T,T,T, x,x}
+		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
+		{_x,_T,_T,_T, _T,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x}
 
 	};
 }
@@ -223,19 +235,21 @@ class Errors
 		switch ( n )
 		{
 			case 0: s = "EOF expected"; break;
-			case 1: s = "number expected"; break;
-			case 2: s = "string expected"; break;
-			case 3: s = "\"{\" expected"; break;
-			case 4: s = "\"}\" expected"; break;
-			case 5: s = "\",\" expected"; break;
-			case 6: s = "\":\" expected"; break;
-			case 7: s = "\"[\" expected"; break;
-			case 8: s = "\"]\" expected"; break;
-			case 9: s = "\"true\" expected"; break;
-			case 10: s = "\"false\" expected"; break;
-			case 11: s = "\"null\" expected"; break;
-			case 12: s = "??? expected"; break;
-			case 13: s = "invalid Value"; break;
+			case 1: s = "Number expected"; break;
+			case 2: s = "CString expected"; break;
+			case 3: s = "Null expected"; break;
+			case 4: s = "True expected"; break;
+			case 5: s = "False expected"; break;
+			case 6: s = "QuotationMark expected"; break;
+			case 7: s = "CurlyBracketOpen expected"; break;
+			case 8: s = "CurlyBracketClose expected"; break;
+			case 9: s = "SquareBracketOpen expected"; break;
+			case 10: s = "SquareBracketClose expected"; break;
+			case 11: s = "Colon expected"; break;
+			case 12: s = "Comma expected"; break;
+			case 13: s = "Tab expected"; break;
+			case 14: s = "??? expected"; break;
+			case 15: s = "invalid Value"; break;
 
 			default: s = "error " + n; break;
 		}
