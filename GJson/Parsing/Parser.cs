@@ -41,6 +41,7 @@ public partial class Parser
 		Object,
 		ObjectList,
 		ObjectItem,
+		Key,
 		Array,
 		ArrayList,
 		ArrayItem
@@ -228,10 +229,16 @@ public partial class Parser
 
 	void ObjectItem() {
 		ProductionBegin( ENonTerminal.ObjectItem );
-		String();
+		Key();
 		Expect(ETerminal.Colon);
 		Value();
 		ProductionEnd( ENonTerminal.ObjectItem );
+	}
+
+	void Key() {
+		ProductionBegin( ENonTerminal.Key );
+		String();
+		ProductionEnd( ENonTerminal.Key );
 	}
 
 	void Array() {

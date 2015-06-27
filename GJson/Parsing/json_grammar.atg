@@ -61,7 +61,10 @@ ObjectList =
 	ObjectItem { Comma ObjectItem } .
 
 ObjectItem =
-	String Colon Value .
+	Key Colon Value .
+
+Key =
+	String .
 
 Array =
 	SquareBracketOpen [ ArrayList ] SquareBracketClose .

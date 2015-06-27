@@ -61,7 +61,7 @@ namespace GJson
             if ( obj == null )
                 return new JsonValue(); 
 
-            Type type = obj.GetType();
+            var type = obj.GetType();
 
             var converter = FindConverter( type );
             if ( converter != null )
@@ -162,7 +162,6 @@ namespace GJson
                 return converter.Write( obj );
 
             var json = new JsonValue();
-            //json.ConvertToObject();
 
             foreach ( var member in GetMembers( type ) )
             {
@@ -202,7 +201,7 @@ namespace GJson
 
 			var jsonAsArray = json.AsArray;
 
-            foreach ( object item in enumerable )
+            foreach ( var item in enumerable )
             {
                 jsonAsArray.Add( SerializeValue( item ) );
             }
@@ -213,17 +212,17 @@ namespace GJson
         Converter FindConverter( Type type )
         {
             Converter converter;
-            if ( !_converters.TryGetValue( type, out converter ) )
-            {
-                var converterAttribute = GetAttribute<ConverterAttribute>( type );
-                if ( converterAttribute != null )
-                {
-                    converter = Activator.CreateInstance( converterAttribute.ConverterType ) as Converter;
-                    _converters[type] = converter;
-                }
-            }
+	        if ( _converters.TryGetValue( type, out converter ) )
+				return converter;
 
-            return converter;
+	        var converterAttribute = GetAttribute<ConverterAttribute>( type );
+	        if ( converterAttribute == null )
+				return null;
+
+	        converter = Activator.CreateInstance( converterAttribute.ConverterType ) as Converter;
+	        _converters[type] = converter;
+
+	        return converter;
         }
 
         T GetAttribute<T>( Type type ) where T : Attribute
@@ -350,7 +349,7 @@ namespace GJson
                 | BindingFlags.NonPublic
                 | BindingFlags.Instance );
 
-            foreach ( MemberInfo member in members )
+            foreach ( var member in members )
             {
                 var fieldInfo = member as FieldInfo;
                 if ( fieldInfo != null )
@@ -378,7 +377,7 @@ namespace GJson
                 || json.JsonType == JsonType.Null )
                 return default( T );
 
-            object result = DeserializeValue( json, typeof( T ) );
+            var result = DeserializeValue( json, typeof( T ) );
             if ( result == null )
                 return default( T );
 
