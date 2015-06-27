@@ -9,52 +9,52 @@
 
 		public static implicit operator JsonValue( char value )
 		{
-			return new JsonValue { _type = JsonType.Boolean, _int = value };
+			return new JsonValue { _type = JsonType.Boolean, _real = value };
 		}
 
 		public static implicit operator JsonValue( sbyte value )
 		{
-			return new JsonValue { _type = JsonType.Number, _int = value };
+			return new JsonValue { _type = JsonType.Number, _real = value };
 		}
 
 		public static implicit operator JsonValue( byte value )
 		{
-			return new JsonValue { _type = JsonType.Number, _int = value };
+			return new JsonValue { _type = JsonType.Number, _real = value };
 		}
 
 		public static implicit operator JsonValue( short value )
 		{
-			return new JsonValue { _type = JsonType.Number, _int = value };
+			return new JsonValue { _type = JsonType.Number, _real = value };
 		}
 
 		public static implicit operator JsonValue( ushort value )
 		{
-			return new JsonValue { _type = JsonType.Number, _int = value };
+			return new JsonValue { _type = JsonType.Number, _real = value };
 		}
 
 		public static implicit operator JsonValue( int value )
 		{
-			return new JsonValue { _type = JsonType.Number, _int = value };
+			return new JsonValue { _type = JsonType.Number, _real = value };
 		}
 
 		public static implicit operator JsonValue( uint value )
 		{
-			return new JsonValue { _type = JsonType.Number, _int = value };
+			return new JsonValue { _type = JsonType.Number, _real = value };
 		}
 
 		public static implicit operator JsonValue( long value )
 		{
-			return new JsonValue { _type = JsonType.Number, _int = value };
+			return new JsonValue { _type = JsonType.Number, _real = value };
 		}
 
 		public static implicit operator JsonValue( float value )
 		{
-			return new JsonValue { _type = JsonType.Number, _float = value };
+			return new JsonValue { _type = JsonType.Number, _real = value };
 		}
 
 		public static implicit operator JsonValue( double value )
 		{
-			return new JsonValue { _type = JsonType.Number, _float = ( float )value };
+			return new JsonValue { _type = JsonType.Number, _real = ( float )value };
 		}
 
 		public static implicit operator JsonValue( string value )
@@ -69,26 +69,22 @@
 
 		public static implicit operator int( JsonValue value )
 		{
-			if ( value._int.HasValue )
-				return ( int )value._int.GetValueOrDefault();
-
-			return ( int )value._float.GetValueOrDefault();
+			return ( int )value._real.GetValueOrDefault();
 		}
 
 		public static implicit operator long( JsonValue value )
 		{
-			if ( value._int.HasValue )
-				return value._int.GetValueOrDefault();
-
-			return ( int )value._float.GetValueOrDefault();
+			return ( int )value._real.GetValueOrDefault();
 		}
 
 		public static implicit operator double( JsonValue value )
 		{
-			if ( value._int.HasValue )
-				return value._int.GetValueOrDefault();
+			return value._real.GetValueOrDefault();
+		}
 
-			return value._float.GetValueOrDefault();
+		public static implicit operator float( JsonValue value )
+		{
+			return value._real.GetValueOrDefault();
 		}
 
 		public static implicit operator string( JsonValue value )

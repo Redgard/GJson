@@ -6,16 +6,6 @@ namespace GJson
 {
 	public partial class JsonValue : IList<JsonValue>, IDictionary<string, JsonValue>
 	{
-		JsonType _type = JsonType.Null;
-		bool? _bool;
-		long? _int;
-		float? _float;
-		string _string;
-		List<JsonValue> _list;
-		Dictionary<string, JsonValue> _dict;
-
-		public JsonType JsonType { get { return _type; } }
-
 		public void ConvertToArray()
 		{
 			if ( _type != JsonType.Array )

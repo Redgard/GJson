@@ -42,14 +42,7 @@
 
 				case JsonType.Number:
 
-					if ( _int.HasValue )
-					{
-						writer.WriteNumber( _int.GetValueOrDefault() );
-					}
-					else
-					{
-						writer.WriteNumber( _float.GetValueOrDefault() );
-					}
+					writer.WriteNumber( _real.GetValueOrDefault() );
 
 					break;
 

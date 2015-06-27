@@ -4,41 +4,25 @@ using System.Globalization;
 
 namespace GJson
 {
-	class ParserStack<T>
+	class ParserStack<T> : Stack<T>
 	{
-		readonly Stack<T> _stack = new Stack<T>();
-
         public T Result
         {
             get
             {
-                if ( _stack.Count != 1 ) 
+                if ( Count != 1 ) 
                     throw new Exception( "_stack.Count > 0" );
 
-                return _stack.Peek();
+                return Peek();
             }
         }
-
-		public void Push( T value )
-		{
-			 _stack.Push( value );
-		}
 	}
 
     partial class Parser
     {
-		readonly Stack<JsonValue> _stack = new Stack<JsonValue>();
+		readonly ParserStack<JsonValue> _stack = new ParserStack<JsonValue>();
 
-        public JsonValue Result
-        {
-            get
-            {
-                if ( _stack.Count != 1 ) 
-                    throw new Exception( "_stack.Count > 0" );
-
-                return _stack.Peek();
-            }
-        }
+        public JsonValue Result { get { return _stack.Result; } }
 
         void PushEmpty()
         {
@@ -96,12 +80,12 @@ namespace GJson
 			switch ( production )
             {
 				case ENonTerminal.String : PushString( CurrentToken ); break;
-				case ENonTerminal.ObjectItem: AddItemToObject(); break;
-				case ENonTerminal.ArrayItem: AddItemToArray(); break;
 				case ENonTerminal.Number: PushDouble( CurrentToken ); break;
 				case ENonTerminal.True: PushTrue(); break;
 				case ENonTerminal.False: PushFalse(); break;
 				case ENonTerminal.Null: PushEmpty(); break;
+				case ENonTerminal.ObjectItem: AddItemToObject(); break;
+				case ENonTerminal.ArrayItem: AddItemToArray(); break;
             }
         }
     }
