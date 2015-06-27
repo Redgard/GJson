@@ -26,13 +26,7 @@ namespace GJsonTests
 
         static void Main( string[] args )
         {
-			JsonValue json = JsonValue.Parse( ReadFile( "test.json" ) );
-
-			json["a"].Add( 1 );
-			json["a"].Add( 2 );
-			json["a"].Add( 3 );
-			json["a"].Add( 4 );
-			json["a"].Add( 5 );
+			var json = JsonValue.Parse( ReadFile( "test.json" ) );
 
 			var writer = new IdentWriter();
 			writer.SingleLineArray = true;

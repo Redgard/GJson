@@ -162,7 +162,7 @@ namespace GJson
                 return converter.Write( obj );
 
             var json = new JsonValue();
-            json.ConvertToObject();
+            //json.ConvertToObject();
 
             foreach ( var member in GetMembers( type ) )
             {
@@ -199,11 +199,12 @@ namespace GJson
                 return new JsonValue();
 
             var json = new JsonValue();
-            json.ConvertToArray();
+
+			var jsonAsArray = json.AsArray;
 
             foreach ( object item in enumerable )
             {
-                json.Add( SerializeValue( item ) );
+                jsonAsArray.Add( SerializeValue( item ) );
             }
 
             return json;

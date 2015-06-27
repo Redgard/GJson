@@ -56,14 +56,14 @@ namespace GJson
             var value = _stack.Pop();
 			var key = _stack.Pop();
 			var obj = _stack.Peek();
-            obj.Add( key, value );
+            obj.AsObject.Add( key, value );
         }
 
         void AddItemToArray()
         {
 			var value = _stack.Pop();
 			var obj = _stack.Peek();
-            obj.Add( value );
+            obj.AsArray.Add( value );
         }
 
 		partial void ProductionBegin( ENonTerminal production )
