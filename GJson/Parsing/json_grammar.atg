@@ -15,11 +15,11 @@ CHARACTERS
 	
 TOKENS
 
-    Number = [ '-' ] ('0' | digitH { digit }) [ '.' { digit } ] [ ('e' | 'E') [ '+' | '-' ] digit { digit } ].
-    CString = '"' { stringCh | '\\' escCh | "\\u" hexCh hexCh hexCh hexCh } '"'.
-	Null = "null".
-	True = "true".
-	False = "false".
+    TNumber = [ '-' ] ('0' | digitH { digit }) [ '.' { digit } ] [ ('e' | 'E') [ '+' | '-' ] digit { digit } ].
+    TString = '"' { stringCh | '\\' escCh | "\\u" hexCh hexCh hexCh hexCh } '"'.
+	TNull = "null".
+	TTrue = "true".
+	TFalse = "false".
 	QuotationMark = "\"".
 	CurlyBracketOpen = "{".
 	CurlyBracketClose = "}".
@@ -39,33 +39,46 @@ PRODUCTIONS
 Json =
 	Value.
 
-String = CString (. Push<String>( t.val ); .).
+String =
+	TString .
 	
-Object = (. PushEmpty(); .)
-	CurlyBracketOpen [ ObjectList ] CurlyBracketClose.
+Number =
+	TNumber . 
 
+True =
+	TTrue . 
+
+False =
+	TFalse . 
+
+Null =
+	TNull . 
+
+Object =
+	CurlyBracketOpen [ ObjectList ] CurlyBracketClose .
+	
 ObjectList =
-	ObjectItem { Comma ObjectItem }.
+	ObjectItem { Comma ObjectItem } .
 
 ObjectItem =
-	String Colon Value (. AddItemToObject(); .) .
+	String Colon Value .
 
-Array = (. PushEmpty(); .)
-	SquareBracketOpen [ ArrayList ] SquareBracketClose.
+Array =
+	SquareBracketOpen [ ArrayList ] SquareBracketClose .
 
 ArrayList =
-	ArrayItem { Comma ArrayItem }.
+	ArrayItem { Comma ArrayItem } .
 
 ArrayItem = 
-	Value (. AddItemToArray(); .) .
+	Value .
 
 Value = 
-( Object
+	Object
 	| Array
 	| String
-	| Number (. Push<Double>( t.val ); .)
-	| True (. Push<Boolean>( t.val ); .)
-	| False (. Push<Boolean>( t.val ); .)
-	| Null (. PushEmpty(); .) ) .
+	| Number
+	| True
+	| False 
+	| Null .
 
 END Json.

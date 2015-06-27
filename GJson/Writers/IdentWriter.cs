@@ -5,10 +5,12 @@ namespace GJson
 {
 	public class IdentWriter : DefaultWriter
     {
-        int _ident = 0;
+        int _ident;
 
 		public bool Ident { set; get; }
 		public bool SingleLineArray { set; get; }
+
+		public string IdentString = StringConstants.Tab;
 
         public IdentWriter() :
             base()
@@ -29,7 +31,7 @@ namespace GJson
         {
 			for ( int i = 0; i < _ident; ++i )
 			{
-				Write( StringConstants.Tab );
+				Write( IdentString );
 			}
         }
 
@@ -64,6 +66,8 @@ namespace GJson
                     }
 
 					WriteObjectPair( jsonV );
+					
+					firstD = false;
                 }
 
 				DecreaseIdent();

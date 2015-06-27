@@ -6,14 +6,20 @@ namespace GJson
 	{
 		public static JsonValue Parse( string text )
 		{
-			Parser parser = new Parser( new Scanner( text ) );
-			parser.Parse();
-
-			if ( parser.errors.Count > 0 )
-				throw new Exception( parser.errors.ErrorStream.ToString() );
+			var parser = new Parser();
+			parser.Errors.Message += ErrorMessagesDispatcher;
+			parser.Parse( new Scanner( text ) );
 
 			return parser.Result;
 		}
+
+		static void ErrorMessagesDispatcher( ParserErrors.Data data )
+        {
+            if ( data.Type == ParserErrors.EType.Error )
+            {
+                throw new Exception( data.Text );
+            }
+        }
 
 		public static JsonValue TryParse( string text )
 		{

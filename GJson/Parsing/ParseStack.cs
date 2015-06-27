@@ -4,6 +4,27 @@ using System.Globalization;
 
 namespace GJson
 {
+	class ParserStack<T>
+	{
+		readonly Stack<T> _stack = new Stack<T>();
+
+        public T Result
+        {
+            get
+            {
+                if ( _stack.Count != 1 ) 
+                    throw new Exception( "_stack.Count > 0" );
+
+                return _stack.Peek();
+            }
+        }
+
+		public void Push( T value )
+		{
+			 _stack.Push( value );
+		}
+	}
+
     partial class Parser
     {
 		readonly Stack<JsonValue> _stack = new Stack<JsonValue>();
@@ -24,33 +45,27 @@ namespace GJson
             _stack.Push( new JsonValue() );
         }
 
-        void Push<T>( string s )
+		void PushString( string value )
         {
-			var type = typeof( T );
+            value = value.Substring( 1, value.Length - 2 );
 
-			if ( type == typeof( string ) )
-            {
-				PushString( s );
-            }
-			else if ( type == typeof( double ) )
-            {
-                _stack.Push( Convert.ToDouble( s, CultureInfo.InvariantCulture ) );
-            }
-			else if ( type == typeof( bool ) )
-            {
-                _stack.Push( Convert.ToBoolean( s ) );
-            }
+			_stack.Push( value );
         }
 
-		//T Pop<T>()
-		//{
-		//	var peek = _stack.Peek();
-		//	if ( peek == null
-		//		|| peek.GetType() != typeof( T ) )
-		//		throw new Exception( "Bad stack." );
-		//
-		//	return ( T )_stack.Pop();
-		//}
+		void PushTrue()
+        {
+			_stack.Push( true );
+        }
+
+		void PushFalse()
+        {
+			_stack.Push( false );
+        }
+
+        void PushDouble( string value )
+        {
+			_stack.Push( Convert.ToDouble( value, CultureInfo.InvariantCulture ) );
+        }
 
         void AddItemToObject()
         {
@@ -67,11 +82,27 @@ namespace GJson
             obj.Add( value );
         }
 
-		void PushString( string s )
+		partial void ProductionBegin( ENonTerminal production )
         {
-            s = s.Substring( 1, s.Length - 2 );
+			switch ( production )
+	        {
+		        case ENonTerminal.Object: PushEmpty(); break;
+		        case ENonTerminal.Array: PushEmpty(); break;
+	        }
+        }
 
-			_stack.Push( s );
+        partial void ProductionEnd( ENonTerminal production )
+        {
+			switch ( production )
+            {
+				case ENonTerminal.String : PushString( CurrentToken ); break;
+				case ENonTerminal.ObjectItem: AddItemToObject(); break;
+				case ENonTerminal.ArrayItem: AddItemToArray(); break;
+				case ENonTerminal.Number: PushDouble( CurrentToken ); break;
+				case ENonTerminal.True: PushTrue(); break;
+				case ENonTerminal.False: PushFalse(); break;
+				case ENonTerminal.Null: PushEmpty(); break;
+            }
         }
     }
 }

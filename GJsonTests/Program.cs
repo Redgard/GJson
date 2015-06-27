@@ -5,8 +5,6 @@ using System.Reflection;
 
 using GJson;
 
-using Xunit;
-
 namespace GJsonTests
 {
     public partial class Tests
@@ -38,9 +36,10 @@ namespace GJsonTests
 
 			var writer = new IdentWriter();
 			writer.SingleLineArray = true;
+			writer.IdentString = "    ";
 
 			json.Write( writer );
-
+	
 			Console.WriteLine( writer );
 
             Console.ReadKey();

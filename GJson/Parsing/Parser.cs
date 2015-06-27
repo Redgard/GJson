@@ -1,101 +1,132 @@
 
 using System;
-using System.IO;
+using System.Collections.Generic;
 
-namespace GJson {
-
-
-
-partial class Parser 
+namespace GJson
 {
-	public const int _EOF = 0;
-	public const int _Number = 1;
-	public const int _CString = 2;
-	public const int _Null = 3;
-	public const int _True = 4;
-	public const int _False = 5;
-	public const int _QuotationMark = 6;
-	public const int _CurlyBracketOpen = 7;
-	public const int _CurlyBracketClose = 8;
-	public const int _SquareBracketOpen = 9;
-	public const int _SquareBracketClose = 10;
-	public const int _Colon = 11;
-	public const int _Comma = 12;
-	public const int _Tab = 13;
-	public const int maxT = 14;
 
-	const bool _T = true;
-	const bool _x = false;
+
+public partial class Parser
+{
+
+	public enum ETerminal
+	{
+		EOF = 0,
+		TNumber = 1,
+		TString = 2,
+		TNull = 3,
+		TTrue = 4,
+		TFalse = 5,
+		QuotationMark = 6,
+		CurlyBracketOpen = 7,
+		CurlyBracketClose = 8,
+		SquareBracketOpen = 9,
+		SquareBracketClose = 10,
+		Colon = 11,
+		Comma = 12,
+		Tab = 13
+	}
+
+	public const int MaxT = 14;
+
+	public enum ENonTerminal
+	{
+		Json,
+		Value,
+		String,
+		Number,
+		True,
+		False,
+		Null,
+		Object,
+		ObjectList,
+		ObjectItem,
+		Array,
+		ArrayList,
+		ArrayItem
+	}
+
+
+	const bool T = true;
+	const bool F = false;
 	const int minErrDist = 2;
 	
-	public Scanner scanner;
-	public Errors  errors;
+	Scanner _scanner;
 
-	public Token t;    // last recognized token
-	public Token la;   // lookahead token
-	int errDist = minErrDist;
+	Token t;    // last recognized token
+	Token la;   // lookahead token
+	int errDist;
+	
+    partial void ProductionBegin( ENonTerminal production );
+    partial void ProductionEnd( ENonTerminal production );
+	
+	public ParserErrors Errors { get; set; }
+	
+    public string CurrentToken { get { return t.val; } }
+	
+	int GetNextTokenKind() { return _scanner.Peek().kind; }
+	
 
 
+    public Parser()
+    {
+        Errors = new ParserErrors();
+    }
 
-	public Parser(Scanner scanner)
+	void SyntaxError(int n)
 	{
-		this.scanner = scanner;
-		errors = new Errors();
-	}
-
-	void SynErr (int n)
-	{
-		if (errDist >= minErrDist) errors.SynErr(la.line, la.col, n);
+		if (errDist >= minErrDist) Errors.SyntaxError(la.line, la.col, n);
 		errDist = 0;
 	}
 
-	public void SemErr (string msg) 
+	void SemanticError(string msg)
 	{
-		if (errDist >= minErrDist) errors.SemErr(t.line, t.col, msg);
+		if (errDist >= minErrDist) Errors.SemanticError(t.line, t.col, msg);
 		errDist = 0;
 	}
 	
-	void Get ()
+	void Get()
 	{
-		for (;;)
+		while (true)
 		{
 			t = la;
-			la = scanner.Scan();
-			if (la.kind <= maxT) { ++errDist; break; }
+			la = _scanner.Scan();
+			if (la.kind <= MaxT) { ++errDist; break; }
 
 			la = t;
 		}
 	}
 	
-	void Expect (int n)
+	void Expect(ETerminal n)
 	{
-		if (la.kind==n) Get(); else { SynErr(n); }
+		if (la.kind==(int)n) Get(); else { SyntaxError((int)n); }
 	}
 	
-	bool StartOf (int s)
+	bool StartOf(int s)
 	{
 		return set[s, la.kind];
 	}
 	
-	void ExpectWeak (int n, int follow) 
+	void ExpectWeak(ETerminal n, int follow)
 	{
-		if (la.kind == n) Get();
-		else 
+		if (la.kind == (int)n) Get();
+		else
 		{
-			SynErr(n);
+			SyntaxError((int)n);
 			while (!StartOf(follow)) Get();
 		}
 	}
 
-	bool WeakSeparator(int n, int syFol, int repFol) 
+	bool WeakSeparator(int n, int syFol, int repFol)
 	{
 		int kind = la.kind;
 		if (kind == n) {Get(); return true;}
 		else if (StartOf(repFol)) {return false;}
-		else
+		else 
 		{
-			SynErr(n);
-			while (!(set[syFol, kind] || set[repFol, kind] || set[0, kind])) {
+			SyntaxError(n);
+			while (!(set[syFol, kind] || set[repFol, kind] || set[0, kind])) 
+			{
 				Get();
 				kind = la.kind;
 			}
@@ -104,142 +135,208 @@ partial class Parser
 	}
 	
 	void Json() {
+		ProductionBegin( ENonTerminal.Json );
 		Value();
+		ProductionEnd( ENonTerminal.Json );
 	}
 
 	void Value() {
-		switch (la.kind) {
-		case 7: {
+		ProductionBegin( ENonTerminal.Value );
+		switch ((ETerminal)la.kind) {
+		case ETerminal.CurlyBracketOpen: {
 			Object();
 			break;
 		}
-		case 9: {
+		case ETerminal.SquareBracketOpen: {
 			Array();
 			break;
 		}
-		case 2: {
+		case ETerminal.TString: {
 			String();
 			break;
 		}
-		case 1: {
-			Get();
-			Push<Double>( t.val ); 
+		case ETerminal.TNumber: {
+			Number();
 			break;
 		}
-		case 4: {
-			Get();
-			Push<Boolean>( t.val ); 
+		case ETerminal.TTrue: {
+			True();
 			break;
 		}
-		case 5: {
-			Get();
-			Push<Boolean>( t.val ); 
+		case ETerminal.TFalse: {
+			False();
 			break;
 		}
-		case 3: {
-			Get();
-			PushEmpty(); 
+		case ETerminal.TNull: {
+			Null();
 			break;
 		}
-		default: SynErr(15); break;
+		default: SyntaxError(15); break;
 		}
+		ProductionEnd( ENonTerminal.Value );
 	}
 
 	void String() {
-		Expect(2);
-		Push<String>( t.val ); 
+		ProductionBegin( ENonTerminal.String );
+		Expect(ETerminal.TString);
+		ProductionEnd( ENonTerminal.String );
+	}
+
+	void Number() {
+		ProductionBegin( ENonTerminal.Number );
+		Expect(ETerminal.TNumber);
+		ProductionEnd( ENonTerminal.Number );
+	}
+
+	void True() {
+		ProductionBegin( ENonTerminal.True );
+		Expect(ETerminal.TTrue);
+		ProductionEnd( ENonTerminal.True );
+	}
+
+	void False() {
+		ProductionBegin( ENonTerminal.False );
+		Expect(ETerminal.TFalse);
+		ProductionEnd( ENonTerminal.False );
+	}
+
+	void Null() {
+		ProductionBegin( ENonTerminal.Null );
+		Expect(ETerminal.TNull);
+		ProductionEnd( ENonTerminal.Null );
 	}
 
 	void Object() {
-		PushEmpty(); 
-		Expect(7);
-		if (la.kind == 2) {
+		ProductionBegin( ENonTerminal.Object );
+		Expect(ETerminal.CurlyBracketOpen);
+		if (la.kind == (int)ETerminal.TString) {
 			ObjectList();
 		}
-		Expect(8);
+		Expect(ETerminal.CurlyBracketClose);
+		ProductionEnd( ENonTerminal.Object );
 	}
 
 	void ObjectList() {
+		ProductionBegin( ENonTerminal.ObjectList );
 		ObjectItem();
-		while (la.kind == 12) {
+		while (la.kind == (int)ETerminal.Comma) {
 			Get();
 			ObjectItem();
 		}
+		ProductionEnd( ENonTerminal.ObjectList );
 	}
 
 	void ObjectItem() {
+		ProductionBegin( ENonTerminal.ObjectItem );
 		String();
-		Expect(11);
+		Expect(ETerminal.Colon);
 		Value();
-		AddItemToObject(); 
+		ProductionEnd( ENonTerminal.ObjectItem );
 	}
 
 	void Array() {
-		PushEmpty(); 
-		Expect(9);
+		ProductionBegin( ENonTerminal.Array );
+		Expect(ETerminal.SquareBracketOpen);
 		if (StartOf(1)) {
 			ArrayList();
 		}
-		Expect(10);
+		Expect(ETerminal.SquareBracketClose);
+		ProductionEnd( ENonTerminal.Array );
 	}
 
 	void ArrayList() {
+		ProductionBegin( ENonTerminal.ArrayList );
 		ArrayItem();
-		while (la.kind == 12) {
+		while (la.kind == (int)ETerminal.Comma) {
 			Get();
 			ArrayItem();
 		}
+		ProductionEnd( ENonTerminal.ArrayList );
 	}
 
 	void ArrayItem() {
+		ProductionBegin( ENonTerminal.ArrayItem );
 		Value();
-		AddItemToArray(); 
+		ProductionEnd( ENonTerminal.ArrayItem );
 	}
 
 
 
-	public void Parse()
+    public void Parse( Scanner s )
+    {
+        _scanner = s;
+		errDist = minErrDist;
+        Errors.Clear();
+
+        Parse();
+    }
+	
+	public void Parse() 
 	{
 		la = new Token();
 		la.val = "";		
 		Get();
 		Json();
-		Expect(0);
+		Expect(ETerminal.EOF);
 
 	}
 	
-	static readonly bool[,] set = 
+	static readonly bool[,] set =
 	{
-		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
-		{_x,_T,_T,_T, _T,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x}
+		{T,F,F,F, F,F,F,F, F,F,F,F, F,F,F,F},
+		{F,T,T,T, T,T,F,T, F,T,F,F, F,F,F,F}
 
 	};
 }
 
-class Errors
+public sealed class ParserErrors
 {
-    const string _kEerrMsgFormat = "-- line {0} col {1}: {2}";
+    public int TotalErrorsAmount { get; set; }
+    public int TotalWarningsAmount { get; set; }
 
-    public int Count { get; private set; }
-    public TextWriter ErrorStream { get; private set; }
-
-    public Errors()
+    public enum EType 
     {
-        ErrorStream = new StringWriter();
-        Count = 0;
+        Error,
+        Warning
     }
 
-	public virtual void SynErr (int line, int col, int n)
-	{
+    public struct Data
+    {
+        public int Line;
+        public int Column;
+
+        public EType Type;
+
+        public string Text;
+    }
+
+    public delegate void MessageDelegate( Data data );
+
+    public event MessageDelegate Message;
+
+    public ParserErrors()
+    {
+        Clear();
+    }
+
+    public void Clear()
+    {
+        TotalErrorsAmount = 0;
+        TotalWarningsAmount = 0;
+    }
+	
+    public void SyntaxError( int line, int col, int n )
+    {
 		string s;
+
 		switch ( n )
 		{
 			case 0: s = "EOF expected"; break;
-			case 1: s = "Number expected"; break;
-			case 2: s = "CString expected"; break;
-			case 3: s = "Null expected"; break;
-			case 4: s = "True expected"; break;
-			case 5: s = "False expected"; break;
+			case 1: s = "TNumber expected"; break;
+			case 2: s = "TString expected"; break;
+			case 3: s = "TNull expected"; break;
+			case 4: s = "TTrue expected"; break;
+			case 5: s = "TFalse expected"; break;
 			case 6: s = "QuotationMark expected"; break;
 			case 7: s = "CurlyBracketOpen expected"; break;
 			case 8: s = "CurlyBracketClose expected"; break;
@@ -253,35 +350,52 @@ class Errors
 
 			default: s = "error " + n; break;
 		}
-		
-        ErrorStream.WriteLine( _kEerrMsgFormat, line, col, s );
-        Count++;
+
+		TotalErrorsAmount++;
+        if ( Message != null )
+        {
+            Message( new Data { Line = line, Column = col, Type = EType.Error, Text = s } );
+        }
 	}
 
-    public virtual void SemErr( int line, int col, string s )
+    public void SemanticError( int line, int col, string s )
     {
-        ErrorStream.WriteLine( _kEerrMsgFormat, line, col, s );
-        Count++;
+        TotalErrorsAmount++;
+        if ( Message != null )
+        {
+            Message( new Data { Line = line, Column = col, Type = EType.Error, Text = s } );
+        }
     }
 
-    public virtual void SemErr( string s )
+    public void SemanticError( string s )
     {
-        ErrorStream.WriteLine( s );
-        Count++;
+        TotalErrorsAmount++;
+        if ( Message != null )
+        {
+            Message( new Data { Type = EType.Error, Text = s } );
+        }
     }
 
-    public virtual void Warning( int line, int col, string s )
+    public void Warning( int line, int col, string s )
     {
-        ErrorStream.WriteLine( _kEerrMsgFormat, line, col, s );
+        TotalWarningsAmount++;
+        if ( Message != null )
+        {
+            Message( new Data { Line = line, Column = col, Type = EType.Warning, Text = s } );
+        }
     }
 
-    public virtual void Warning( string s )
+    public void Warning( string s )
     {
-        ErrorStream.WriteLine( s );
+        TotalWarningsAmount++;
+        if ( Message != null )
+        {
+            Message( new Data { Type = EType.Warning, Text = s } );
+        }
     }
 }
 
-class FatalError : Exception
+public class FatalError : Exception
 {
 	public FatalError( string m ):
 		base( m )
