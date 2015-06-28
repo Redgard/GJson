@@ -31,20 +31,20 @@ public partial class Parser
 
 	public enum ENonTerminal
 	{
-		Json,
-		Value,
-		String,
-		Number,
-		True,
-		False,
-		Null,
-		Object,
-		ObjectList,
-		ObjectItem,
-		Key,
-		Array,
-		ArrayList,
-		ArrayItem
+		Json = 0,
+		Value = 1,
+		String = 2,
+		Number = 3,
+		True = 4,
+		False = 5,
+		Null = 6,
+		Object = 7,
+		ObjectList = 8,
+		ObjectItem = 9,
+		Key = 10,
+		Array = 11,
+		ArrayList = 12,
+		ArrayItem = 13
 	}
 
 
@@ -303,8 +303,17 @@ public sealed class ParserErrors
 
     public enum EType 
     {
-        Error,
+        SyntaxError,
+		SemanticError,
         Warning
+    }
+	
+	public enum ESyntaxErrorType 
+    {
+		Unknown,
+        TokenExpected,
+		UnknownTokenExpected,
+        InvalidToken
     }
 
     public struct Data
@@ -315,6 +324,10 @@ public sealed class ParserErrors
         public EType Type;
 
         public string Text;
+		
+		public ESyntaxErrorType SyntaxErrorType;
+		public Parser.ETerminal? SyntaxErrorTerminal;
+		public Parser.ENonTerminal? SyntaxErrorNonTerminal;
     }
 
     public delegate void MessageDelegate( Data data );
@@ -334,58 +347,68 @@ public sealed class ParserErrors
 	
     public void SyntaxError( int line, int col, int n )
     {
-		string s;
-
-		switch ( n )
+		//string s = "";
+		
+		ESyntaxErrorType syntaxErrorType = ESyntaxErrorType.Unknown;
+		Parser.ETerminal? syntaxErrorTerminal = null;
+		Parser.ENonTerminal? syntaxErrorNonTerminal = null;
+		
+		switch(n)
 		{
-			case 0: s = "EOF expected"; break;
-			case 1: s = "TNumber expected"; break;
-			case 2: s = "TString expected"; break;
-			case 3: s = "TNull expected"; break;
-			case 4: s = "TTrue expected"; break;
-			case 5: s = "TFalse expected"; break;
-			case 6: s = "QuotationMark expected"; break;
-			case 7: s = "CurlyBracketOpen expected"; break;
-			case 8: s = "CurlyBracketClose expected"; break;
-			case 9: s = "SquareBracketOpen expected"; break;
-			case 10: s = "SquareBracketClose expected"; break;
-			case 11: s = "Colon expected"; break;
-			case 12: s = "Comma expected"; break;
-			case 13: s = "Tab expected"; break;
-			case 14: s = "??? expected"; break;
-			case 15: s = "invalid Value"; break;
+			case 0:syntaxErrorType = ESyntaxErrorType.TokenExpected;syntaxErrorTerminal = Parser.ETerminal.EOF;break;
+			case 1:syntaxErrorType = ESyntaxErrorType.TokenExpected;syntaxErrorTerminal = Parser.ETerminal.TNumber;break;
+			case 2:syntaxErrorType = ESyntaxErrorType.TokenExpected;syntaxErrorTerminal = Parser.ETerminal.TString;break;
+			case 3:syntaxErrorType = ESyntaxErrorType.TokenExpected;syntaxErrorTerminal = Parser.ETerminal.TNull;break;
+			case 4:syntaxErrorType = ESyntaxErrorType.TokenExpected;syntaxErrorTerminal = Parser.ETerminal.TTrue;break;
+			case 5:syntaxErrorType = ESyntaxErrorType.TokenExpected;syntaxErrorTerminal = Parser.ETerminal.TFalse;break;
+			case 6:syntaxErrorType = ESyntaxErrorType.TokenExpected;syntaxErrorTerminal = Parser.ETerminal.QuotationMark;break;
+			case 7:syntaxErrorType = ESyntaxErrorType.TokenExpected;syntaxErrorTerminal = Parser.ETerminal.CurlyBracketOpen;break;
+			case 8:syntaxErrorType = ESyntaxErrorType.TokenExpected;syntaxErrorTerminal = Parser.ETerminal.CurlyBracketClose;break;
+			case 9:syntaxErrorType = ESyntaxErrorType.TokenExpected;syntaxErrorTerminal = Parser.ETerminal.SquareBracketOpen;break;
+			case 10:syntaxErrorType = ESyntaxErrorType.TokenExpected;syntaxErrorTerminal = Parser.ETerminal.SquareBracketClose;break;
+			case 11:syntaxErrorType = ESyntaxErrorType.TokenExpected;syntaxErrorTerminal = Parser.ETerminal.Colon;break;
+			case 12:syntaxErrorType = ESyntaxErrorType.TokenExpected;syntaxErrorTerminal = Parser.ETerminal.Comma;break;
+			case 13:syntaxErrorType = ESyntaxErrorType.TokenExpected;syntaxErrorTerminal = Parser.ETerminal.Tab;break;
+			case 14:syntaxErrorType = ESyntaxErrorType.UnknownTokenExpected;break;
+			case 15:syntaxErrorType = ESyntaxErrorType.InvalidToken;syntaxErrorNonTerminal = Parser.ENonTerminal.Value;break;
 
-			default: s = "error " + n; break;
 		}
-
+		
 		TotalErrorsAmount++;
+
         if ( Message != null )
         {
-            Message( new Data { Line = line, Column = col, Type = EType.Error, Text = s } );
+            Message( new Data { Line = line, Column = col, Type = EType.SyntaxError, 
+				SyntaxErrorType = syntaxErrorType,
+				SyntaxErrorTerminal = syntaxErrorTerminal,
+				SyntaxErrorNonTerminal = syntaxErrorNonTerminal } );
         }
 	}
 
     public void SemanticError( int line, int col, string s )
     {
         TotalErrorsAmount++;
+
         if ( Message != null )
         {
-            Message( new Data { Line = line, Column = col, Type = EType.Error, Text = s } );
+            Message( new Data { Line = line, Column = col, Type = EType.SemanticError, Text = s } );
         }
     }
 
     public void SemanticError( string s )
     {
         TotalErrorsAmount++;
+
         if ( Message != null )
         {
-            Message( new Data { Type = EType.Error, Text = s } );
+            Message( new Data { Type = EType.SemanticError, Text = s } );
         }
     }
 
     public void Warning( int line, int col, string s )
     {
         TotalWarningsAmount++;
+
         if ( Message != null )
         {
             Message( new Data { Line = line, Column = col, Type = EType.Warning, Text = s } );
@@ -395,6 +418,7 @@ public sealed class ParserErrors
     public void Warning( string s )
     {
         TotalWarningsAmount++;
+
         if ( Message != null )
         {
             Message( new Data { Type = EType.Warning, Text = s } );
