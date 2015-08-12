@@ -18,7 +18,7 @@ namespace GJsonTests
 				+ "\\TestFiles\\";
 		}
 
-		static string ReadFile( string fileName )
+		public static string ReadFile( string fileName )
 		{
 			return File.ReadAllText( _kFilesPath + fileName );
 		}
