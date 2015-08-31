@@ -55,7 +55,7 @@
     <Compile Include="Parsing\Scanner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Writers\DefaultWriter.cs" />
-    <Compile Include="Serializator.cs" />
+    <Compile Include="Serilization\Serializator.cs" />
     <Compile Include="StringConstants.cs" />
   </ItemGroup>
   <ItemGroup>

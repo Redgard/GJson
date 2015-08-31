@@ -50,7 +50,7 @@ namespace GJson
         {
             return _instance.SerializeValue( obj );
         }
-
+		
         public static T Deserialize<T>( JsonValue json )
         {
             return _instance.DeserializeValue<T>( json );
@@ -88,6 +88,10 @@ namespace GJson
             {
                 return SerializeArray( obj as IEnumerable );
             }
+			else if ( type == typeof( JsonValue ) )
+			{
+				return ( JsonValue )obj;
+			}
             else if ( type.IsClass )
             {
                 return SerializeObject( obj );
@@ -394,7 +398,11 @@ namespace GJson
             if ( converter != null )
             {
                 return converter.Read( json );
-            }
+			}
+			else if ( type == typeof( JsonValue ) )
+			{
+				return json;
+			}
             else if ( json.JsonType == JsonType.Object )
             {
                 return DeserializeObject( json, type );

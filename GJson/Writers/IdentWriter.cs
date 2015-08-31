@@ -86,7 +86,7 @@ namespace GJson
 		{
 			Write( StringConstants.QuotationMark );
 			Write( pair.Key );
-			Write( StringConstants.QuotationMark + StringConstants.Space + StringConstants.Colon );
+			Write( StringConstants.QuotationMark + StringConstants.Space + StringConstants.Colon + StringConstants.Space );
 
 			if ( pair.Value.Count > 0 )
             {
