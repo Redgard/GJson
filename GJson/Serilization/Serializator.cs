@@ -56,6 +56,26 @@ namespace GJson
             return _instance.DeserializeValue<T>( json );
         }
 
+		public static T TryDeserialize<T>( JsonValue json )
+		{
+			T result = default( T );
+
+			try
+			{
+				result = Deserialize<T>( json );
+			}
+			catch
+			{
+			}
+
+			if ( result == null )
+			{
+				result = Activator.CreateInstance<T>();
+			}
+
+			return result;
+		}
+
         JsonValue SerializeValue( object obj )
         {
             if ( obj == null )
