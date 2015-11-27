@@ -26,10 +26,20 @@ namespace GJson
 
         void PushEmpty()
         {
-            _stack.Push( new JsonValue() );
+            _stack.Push( JsonValue.CreateNull() );
         }
 
-		void PushString( string value )
+        void PushEmptyArray()
+        {
+            _stack.Push( JsonValue.CreateEmptyArray() );
+        }
+
+        void PushEmptyOBject()
+        {
+            _stack.Push( JsonValue.CreateEmptyObject() );
+        }
+
+        void PushString( string value )
         {
             value = value.Substring( 1, value.Length - 2 );
 
@@ -70,8 +80,8 @@ namespace GJson
         {
 			switch ( production )
 	        {
-		        case ENonTerminal.Object: PushEmpty(); break;
-		        case ENonTerminal.Array: PushEmpty(); break;
+		        case ENonTerminal.Object: PushEmptyOBject(); break;
+		        case ENonTerminal.Array: PushEmptyArray(); break;
 	        }
         }
 

@@ -12,5 +12,24 @@ namespace GJson
 		Dictionary<string, JsonValue> _dict;
 
 		public JsonType JsonType { get { return _type; } }
-	}
+
+        public static JsonValue CreateNull()
+        {
+            return new JsonValue();
+        }
+
+        public static JsonValue CreateEmptyArray()
+        {
+            var json = new JsonValue();
+            json.ConvertToArray();
+            return json;
+        }
+
+        public static JsonValue CreateEmptyObject()
+        {
+            var json = new JsonValue();
+            json.ConvertToObject();
+            return json;
+        }
+    }
 }
