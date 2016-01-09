@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GJson
 {
@@ -93,7 +94,8 @@ namespace GJson
 			}
 		}
 
-		public IList<JsonValue> AsArray
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public IList<JsonValue> AsArray
 		{
 			get
 			{
@@ -103,7 +105,8 @@ namespace GJson
 			}
 		}
 
-		public IDictionary<string, JsonValue> AsObject
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public IDictionary<string, JsonValue> AsObject
 		{
 			get
 			{
