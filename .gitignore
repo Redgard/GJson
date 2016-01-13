@@ -24,4 +24,4 @@ bin/
 exe/
 packages/
 _ReSharper*/
-*.exe
+#*.exe
