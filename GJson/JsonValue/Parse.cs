@@ -8,7 +8,7 @@ namespace GJson
 		public static JsonValue Parse( string text )
 		{
 			var parser = new Parser();
-			parser.Errors.Message += ( x ) => { throw new JsonParseException( x ); };
+			parser.Errors.Message += x => { throw new JsonParseException( x ); };
 			parser.Parse( new Scanner( text ) );
 
 			return parser.Result;
