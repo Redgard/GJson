@@ -54,7 +54,7 @@
 
 		public static implicit operator JsonValue( double value )
 		{
-			return new JsonValue { _type = JsonType.Number, _real = ( float )value };
+			return new JsonValue { _type = JsonType.Number, _real = value };
 		}
 
 		public static implicit operator JsonValue( string value )
@@ -84,7 +84,7 @@
 
 		public static implicit operator float( JsonValue value )
 		{
-			return value._real.GetValueOrDefault();
+			return (float)value._real.GetValueOrDefault();
 		}
 
 		public static implicit operator string( JsonValue value )

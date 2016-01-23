@@ -7,7 +7,7 @@ namespace GJson
 		JsonType _type = JsonType.Null;
 		string _string;
 		bool? _bool;
-		float? _real;
+		double? _real;
 		List<JsonValue> _list;
 		Dictionary<string, JsonValue> _dict;
 
