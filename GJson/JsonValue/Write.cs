@@ -3,24 +3,24 @@
 	public partial class JsonValue
 	{
 		public override string ToString()
-        {
-			return ToString( new DefaultWriter() );
-        }
-
-        public string ToStringIdent()
-        {
-			return ToString( new IdentWriter() );
-        }
-
-		public string ToString( IJsonWriter writer )
 		{
-			Write( writer );
+			return ToString(new DefaultWriter());
+		}
+
+		public string ToStringIdent()
+		{
+			return ToString(new IdentWriter());
+		}
+
+		public string ToString(IJsonWriter writer)
+		{
+			Write(writer);
 			return writer.ToString();
 		}
 
-		public void Write( IJsonWriter writer )
+		public void Write(IJsonWriter writer)
 		{
-			switch ( JsonType )
+			switch (JsonType)
 			{
 				case JsonType.Null:
 
@@ -30,31 +30,31 @@
 
 				case JsonType.Boolean:
 
-					writer.WriteBoolean( _bool.GetValueOrDefault() );
+					writer.WriteBoolean(_bool.GetValueOrDefault());
 
 					break;
 
 				case JsonType.String:
 
-					writer.WriteString( _string );
+					writer.WriteString(_string);
 
 					break;
 
 				case JsonType.Number:
 
-					writer.WriteNumber( _real.GetValueOrDefault() );
+					writer.WriteNumber(_real.GetValueOrDefault());
 
 					break;
 
 				case JsonType.Object:
 
-					writer.WriteObject( this );
+					writer.WriteObject(this);
 
 					break;
 
 				case JsonType.Array:
 
-					writer.WriteArray( this );
+					writer.WriteArray(this);
 
 					break;
 			}

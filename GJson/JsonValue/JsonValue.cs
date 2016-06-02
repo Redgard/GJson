@@ -3,20 +3,20 @@ using System.Diagnostics;
 
 namespace GJson
 {
-	public sealed partial class JsonValue 
+	public sealed partial class JsonValue
 	{
-		void ConvertToArray()
+		private void ConvertToArray()
 		{
-			if ( _type == JsonType.Array )
+			if (_type == JsonType.Array)
 				return;
 
 			_type = JsonType.Array;
 			_list = new List<JsonValue>();
 		}
 
-		void ConvertToObject()
+		private void ConvertToObject()
 		{
-			if ( _type == JsonType.Object )
+			if (_type == JsonType.Object)
 				return;
 
 			_type = JsonType.Object;
@@ -30,10 +30,10 @@ namespace GJson
 				ConvertToArray();
 
 				JsonValue result;
-				if ( index >= _list.Count )
+				if (index >= _list.Count)
 				{
 					result = new JsonValue();
-					_list.Add( result );
+					_list.Add(result);
 				}
 				else
 				{
@@ -46,9 +46,9 @@ namespace GJson
 			{
 				ConvertToArray();
 
-				if ( index >= _list.Count )
+				if (index >= _list.Count)
 				{
-					_list.Add( value ?? new JsonValue() );
+					_list.Add(value ?? new JsonValue());
 				}
 				else
 				{
@@ -65,11 +65,11 @@ namespace GJson
 				ConvertToObject();
 
 				JsonValue result;
-				if ( _dict.TryGetValue( key, out result ) )
+				if (_dict.TryGetValue(key, out result))
 					return result;
 
 				result = new JsonValue();
-				_dict.Add( key, result );
+				_dict.Add(key, result);
 
 				return result;
 			}
@@ -80,22 +80,25 @@ namespace GJson
 				_dict[key] = value ?? new JsonValue();
 			}
 		}
-		
+
 		public int Count
 		{
 			get
 			{
-				switch ( _type )
+				switch (_type)
 				{
-					case JsonType.Object: return _dict.Count;
-					case JsonType.Array: return _list.Count;
-					default: return 0;
+					case JsonType.Object:
+						return _dict.Count;
+					case JsonType.Array:
+						return _list.Count;
+					default:
+						return 0;
 				}
 			}
 		}
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public IList<JsonValue> AsArray
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		public IList<JsonValue> AsArray
 		{
 			get
 			{
@@ -105,8 +108,8 @@ namespace GJson
 			}
 		}
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public IDictionary<string, JsonValue> AsObject
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		public IDictionary<string, JsonValue> AsObject
 		{
 			get
 			{

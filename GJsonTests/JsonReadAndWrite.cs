@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
 using GJson;
-
 using Xunit;
 
 namespace GJsonTests
@@ -13,34 +11,34 @@ namespace GJsonTests
 		[Fact]
 		public void SimpleData()
 		{
-			JsonValue v = new JsonValue();
+			var v = new JsonValue();
 
 			v["a"] = 32;
-			Assert.Equal<int>( v["a"], 32 );
+			Assert.Equal<int>(v["a"], 32);
 
 			v["b"] = true;
-			Assert.Equal<bool>( v["b"], true );
+			Assert.Equal<bool>(v["b"], true);
 
 			v["c"] = false;
-			Assert.Equal<bool>( v["c"], false );
+			Assert.Equal<bool>(v["c"], false);
 
 			v["a"] = 254;
-			Assert.Equal<Byte>( ( Byte )v["a"], ( Byte )254 );
+			Assert.Equal<Byte>((Byte)v["a"], (Byte)254);
 
 			v["a"] = 32;
-			Assert.Equal<Int64>( v["a"], 32 );
-			
+			Assert.Equal<Int64>(v["a"], 32);
+
 			v["a"] = 32;
-			Assert.Equal<Char>( ( Char )v["a"], ( Char )32 );
+			Assert.Equal<Char>((Char)v["a"], (Char)32);
 
 			v["a"] = 123.99942001;
-			Assert.Equal<Double>( v["a"], 123.99942001 );
+			Assert.Equal<Double>(v["a"], 123.99942001);
 
 			v["a"] = Double.NaN;
-			Assert.Equal<Double>( v["a"], Double.NaN );
+			Assert.Equal<Double>(v["a"], Double.NaN);
 
 			v["a"] = 123.12333f;
-			Assert.Equal<Single>( v["a"], 123.12333f );
+			Assert.Equal<Single>(v["a"], 123.12333f);
 		}
 
 		[Fact]
@@ -50,20 +48,38 @@ namespace GJsonTests
 
 			string t = "";
 
-			t = "abc"; v["a"] = t; Assert.Equal( v["a"], t );
-			t = "aBc"; v["a"] = t; Assert.Equal( v["a"], t );
-			t = "abc\\2"; v["a"] = t; Assert.Equal( v["a"], t );
-			t = "abc\n"; v["a"] = t; Assert.Equal( v["a"], t );
-			t = "\n"; v["a"] = t; Assert.Equal( v["a"], t );
-			t = "\r"; v["a"] = t; Assert.Equal( v["a"], t );
-			t = "\t\t44\r"; v["a"] = t; Assert.Equal( v["a"], t );
-			t = "\"fdsfds\""; v["a"] = t; Assert.Equal( v["a"], t );
-			t = "\'fdsfds\'"; v["a"] = t; Assert.Equal( v["a"], t );
+			t = "abc";
+			v["a"] = t;
+			Assert.Equal(v["a"], t);
+			t = "aBc";
+			v["a"] = t;
+			Assert.Equal(v["a"], t);
+			t = "abc\\2";
+			v["a"] = t;
+			Assert.Equal(v["a"], t);
+			t = "abc\n";
+			v["a"] = t;
+			Assert.Equal(v["a"], t);
+			t = "\n";
+			v["a"] = t;
+			Assert.Equal(v["a"], t);
+			t = "\r";
+			v["a"] = t;
+			Assert.Equal(v["a"], t);
+			t = "\t\t44\r";
+			v["a"] = t;
+			Assert.Equal(v["a"], t);
+			t = "\"fdsfds\"";
+			v["a"] = t;
+			Assert.Equal(v["a"], t);
+			t = "\'fdsfds\'";
+			v["a"] = t;
+			Assert.Equal(v["a"], t);
 		}
 
 		[Fact]
-        public void ReadWrite()
-        {
+		public void ReadWrite()
+		{
 			JsonValue v = new JsonValue();
 
 			v["a"] = 32;
@@ -78,19 +94,19 @@ namespace GJsonTests
 			v["f"][2] = false;
 
 			var s1 = v.ToStringIdent();
-			var v2 = JsonValue.Parse( s1 );
+			var v2 = JsonValue.Parse(s1);
 			var s2 = v2.ToStringIdent();
 
-			Assert.Equal( s1, s2 );
+			Assert.Equal(s1, s2);
 
-			var v3 = JsonValue.Parse( File.ReadAllText( "test.json" ) );
+			var v3 = JsonValue.Parse(File.ReadAllText("test.json"));
 			var s3 = v3.ToStringIdent();
-			File.WriteAllText( "test_out.json", s3 );
+			File.WriteAllText("test_out.json", s3);
 
-			var v4 = JsonValue.Parse( File.ReadAllText( "test_out.json" ) );
+			var v4 = JsonValue.Parse(File.ReadAllText("test_out.json"));
 			var s4 = v4.ToStringIdent();
 
-			Assert.Equal( s3, s4 );
+			Assert.Equal(s3, s4);
 		}
 	}
 }

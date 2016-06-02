@@ -6,84 +6,84 @@ namespace GJson
 	public class DefaultWriter : StringWriter, IJsonWriter
 	{
 		public DefaultWriter() :
-            base( CultureInfo.InvariantCulture )
-        {
-        }
+			base(CultureInfo.InvariantCulture)
+		{
+		}
 
 		public virtual void WriteNull()
 		{
-			Write( StringConstants.Null );
+			Write(StringConstants.Null);
 		}
 
-		public virtual void WriteBoolean( bool value )
+		public virtual void WriteBoolean(bool value)
 		{
-			Write( ( value ) ? StringConstants.True : StringConstants.False );
+			Write((value) ? StringConstants.True : StringConstants.False);
 		}
 
-		public virtual void WriteString( string value )
+		public virtual void WriteString(string value)
 		{
-			if ( value == null )
+			if (value == null)
 			{
 				WriteNull();
 			}
 			else
 			{
-				Write( StringConstants.QuotationMark );
-				Write( value );
-				Write( StringConstants.QuotationMark );
+				Write(StringConstants.QuotationMark);
+				Write(value);
+				Write(StringConstants.QuotationMark);
 			}
 		}
 
-		public virtual void WriteNumber( double value )
+		public virtual void WriteNumber(double value)
 		{
-			Write( value );
+			Write(value);
 		}
 
-		public virtual void WriteObject( JsonValue value )
+		public virtual void WriteObject(JsonValue value)
 		{
-			Write( StringConstants.CurlyBracketOpen );
+			Write(StringConstants.CurlyBracketOpen);
 
 			bool firstD = true;
 
-			foreach ( var json in value.AsObject )
+			foreach (var json in value.AsObject)
 			{
-				if ( !firstD )
+				if (!firstD)
 				{
-					Write( StringConstants.Comma );
+					Write(StringConstants.Comma);
 				}
 
-				Write( StringConstants.QuotationMark );
-				Write( json.Key );
-				Write( StringConstants.QuotationMark );
-				Write( StringConstants.Colon );
+				Write(StringConstants.QuotationMark);
+				Write(json.Key);
+				Write(StringConstants.QuotationMark);
+				Write(StringConstants.Colon);
 
-				json.Value.Write( this );
+				json.Value.Write(this);
 
 				firstD = false;
 			}
 
-			Write( StringConstants.CurlyBracketClose );
+			Write(StringConstants.CurlyBracketClose);
 		}
 
-		public virtual void WriteArray( JsonValue value )
+		public virtual void WriteArray(JsonValue value)
 		{
-			Write( StringConstants.SquareBracketOpen );
+			Write(StringConstants.SquareBracketOpen);
 
 			bool firstL = true;
 
-			foreach ( var json in value.AsArray )
+			foreach (var json in value.AsArray)
 			{
-				if ( !firstL )
+				if (!firstL)
 				{
-					Write( StringConstants.Comma );
+					Write(StringConstants.Comma);
 				}
 
-				json.Write( this );
+				json.Write(this);
 
 				firstL = false;
 			}
 
-			Write( StringConstants.SquareBracketClose );
+			Write(StringConstants.SquareBracketClose);
 		}
 	}
 }

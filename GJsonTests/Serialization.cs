@@ -1,109 +1,103 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
 using GJson;
-
 using Xunit;
 
 namespace GJsonTests
 {
 	public partial class Tests
 	{
-		class myconverter : Converter
+		private class Myconverter : Converter
 		{
-			public override object Read( JsonValue json )
+			public override object Read(JsonValue json)
 			{
-				return -( int )json;
+				return -(int)json;
 			}
 
-			public override JsonValue Write( object value )
+			public override JsonValue Write(object value)
 			{
-				return ( -( int )value );
+				return (-(int)value);
 			}
 		}
 
-		class A
+		private class A
 		{
-			MyEnum? ttt = MyEnum.q;
+			private MyEnum? _ttt = MyEnum.Q;
 			//Dictionary<string, int> oo = new Dictionary<string, int>
 			//{
 			//    {"q1", 2},
 			//    {"w1", 432}
 			//};
 
-			[Name( "QQQ" ), Converter( typeof( myconverter ) )]
-			public int t
+			[Name("QQQ"), Converter(typeof(Myconverter))]
+			public int T
 			{
-				get
-				{
-					return 1;
-				}
+				get { return 1; }
 			}
 
-			[Name( "" )]
-			string hh = "fdsfds";
+			[Name("")]
+			private string _hh = "fdsfds";
 
-			enum MyEnum
+			private enum MyEnum
 			{
-				q,
-				w,
-				e
+				Q,
+				W,
+				E
 			}
 
 
-			double gfd = 32.33;
+			private double _gfd = 32.33;
 
 			[Ignore]
-			double eerr22 = 32.33;
+			private double _eerr22 = 32.33;
 
 			//[Converter( typeof( BCONVERTER_2 ) )]
-			B __b = new B();
+			private B _b = new B();
 
-			[Name( "C___C" )]
-			C __c_____ = new C();
+			[Name("C___C")]
+			private C _c = new C();
 
-			List<string> strlis = new List<string> { "fds", "fd222" };
+			private List<string> _strlis = new List<string> {"fds", "fd222"};
 
-			List<C> Clist = new List<C> { new C(), new C(), new C() };
+			private List<C> _clist = new List<C> {new C(), new C(), new C()};
 		}
 
-		[Converter( typeof( BCONVERTER ) )]
-		class B
+		[Converter(typeof(Bconverter))]
+		private class B
 		{
-
 		}
 
-		class BCONVERTER : Converter
+		private class Bconverter : Converter
 		{
-			public override object Read( JsonValue json )
+			public override object Read(JsonValue json)
 			{
 				return new B();
 			}
 
-			public override JsonValue Write( object value )
+			public override JsonValue Write(object value)
 			{
 				return "B_CUSTOM_";
 			}
 		}
 
-		class BCONVERTER_2 : Converter
+		private class Bconverter2 : Converter
 		{
-			public override object Read( JsonValue json )
+			public override object Read(JsonValue json)
 			{
 				return new B();
 			}
 
-			public override JsonValue Write( object value )
+			public override JsonValue Write(object value)
 			{
 				return "B_CUSTOM_22";
 			}
 		}
 
-		class C
+		private class C
 		{
-			public int a = 1;
-			public int b = 2;
+			public int A = 1;
+			public int B = 2;
 			public string c = "STR__33";
 		}
 
@@ -111,18 +105,18 @@ namespace GJsonTests
 		public void Serialization()
 		{
 			var a = new A();
-			var json = Serializator.Serialize( a );
+			var json = Serializator.Serialize(a);
 
-			Console.WriteLine( json.ToStringIdent() );
+			Console.WriteLine(json.ToStringIdent());
 
-			a = Serializator.Deserialize<A>( json );
+			a = Serializator.Deserialize<A>(json);
 
-			json = Serializator.Serialize( a );
+			json = Serializator.Serialize(a);
 
-			Console.WriteLine( json.ToStringIdent() );
+			Console.WriteLine(json.ToStringIdent());
 
-			var tl = new List<C> { new C() { a = 1, b = 2 }, new C() { a = 3, b = 4 } };
-			json = Serializator.Serialize( tl );
+			var tl = new List<C> {new C() {A = 1, B = 2}, new C() {A = 3, B = 4}};
+			json = Serializator.Serialize(tl);
 
 			Console.ReadKey();
 		}

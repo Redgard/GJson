@@ -5,23 +5,23 @@ namespace GJson
 {
 	public partial class JsonValue
 	{
-		public static JsonValue Parse( string text )
+		public static JsonValue Parse(string text)
 		{
-            if ( string.IsNullOrEmpty( text ) )
+			if (string.IsNullOrEmpty(text))
 				return new JsonValue();
 
 			var parser = new Parser();
-			parser.Errors.Message += x => { throw new JsonParseException( x ); };
-			parser.Parse( new Scanner( text ) );
+			parser.Errors.Message += x => { throw new JsonParseException(x); };
+			parser.Parse(new Scanner(text));
 
 			return parser.Result;
 		}
 
-		public static JsonValue TryParse( string text )
+		public static JsonValue TryParse(string text)
 		{
 			try
 			{
-				return Parse( text );
+				return Parse(text);
 			}
 			catch
 			{
@@ -36,11 +36,11 @@ namespace GJson
 
 		public static bool BreakOnException { get; set; }
 
-		public JsonParseException( ParserErrors.Data data )
+		public JsonParseException(ParserErrors.Data data)
 		{
 			Data = data;
 
-			if ( BreakOnException )
+			if (BreakOnException)
 			{
 				Debugger.Break();
 			}
