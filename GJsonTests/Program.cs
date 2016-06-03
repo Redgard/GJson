@@ -7,7 +7,7 @@ namespace GJsonTests
 {
 	public partial class Tests
 	{
-		private static readonly string KFilesPath;
+		public static readonly string KFilesPath;
 
 		static Tests()
 		{

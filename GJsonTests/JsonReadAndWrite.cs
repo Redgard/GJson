@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using GJson;
 using Xunit;
@@ -99,7 +98,7 @@ namespace GJsonTests
 
 			Assert.Equal(s1, s2);
 
-			var v3 = JsonValue.Parse(File.ReadAllText("test.json"));
+			var v3 = JsonValue.Parse(File.ReadAllText(".\\..\\GJsonTests\\TestFiles\\test.json"));
 			var s3 = v3.ToStringIdent();
 			File.WriteAllText("test_out.json", s3);
 

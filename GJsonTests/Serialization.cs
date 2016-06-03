@@ -101,7 +101,7 @@ namespace GJsonTests
 			public string c = "STR__33";
 		}
 
-		[Fact]
+		//[Fact]
 		public void Serialization()
 		{
 			var a = new A();
