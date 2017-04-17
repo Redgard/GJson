@@ -5,7 +5,7 @@ namespace GJsonCorrect
 {
 	public class GJsonCorrectFormController
 	{
-		private readonly GJsonCorrectForm _form;
+	    readonly GJsonCorrectForm _form;
 
 		public GJsonCorrectFormController(GJsonCorrectForm form)
 		{
@@ -27,7 +27,7 @@ namespace GJsonCorrect
 			}
 		}
 
-		private void ProcessJsonParseException(JsonParseException jsonException)
+	    void ProcessJsonParseException(JsonParseException jsonException)
 		{
 			var statusText = "Error " + jsonException.Data.Type;
 
@@ -49,7 +49,7 @@ namespace GJsonCorrect
 			_form.SetStatusText(statusText);
 		}
 
-		private int ConvertLineAndColumnToPosition(int l, int c)
+	    int ConvertLineAndColumnToPosition(int l, int c)
 		{
 			l--;
 			c--;
@@ -58,9 +58,7 @@ namespace GJsonCorrect
 			int newLineLength = Environment.NewLine.Length;
 
 			for (int i = 0; i < l; ++i)
-			{
 				pos += _form.InputBox.Lines[i].Length + newLineLength;
-			}
 
 			pos += c;
 

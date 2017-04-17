@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using GJson;
 using Xunit;
 
@@ -22,30 +21,51 @@ namespace GJsonTests
 			Assert.Equal<bool>(v["c"], false);
 
 			v["a"] = 254;
-			Assert.Equal<Byte>((Byte)v["a"], (Byte)254);
+			Assert.Equal<byte>((byte)v["a"], (byte)254);
 
 			v["a"] = 32;
-			Assert.Equal<Int64>(v["a"], 32);
+			Assert.Equal<long>(v["a"], 32);
 
 			v["a"] = 32;
-			Assert.Equal<Char>((Char)v["a"], (Char)32);
+			Assert.Equal<char>((char)v["a"], (char)32);
 
 			v["a"] = 123.99942001;
-			Assert.Equal<Double>(v["a"], 123.99942001);
+			Assert.Equal<double>(v["a"], 123.99942001);
 
-			v["a"] = Double.NaN;
-			Assert.Equal<Double>(v["a"], Double.NaN);
+			v["a"] = double.NaN;
+			Assert.Equal<double>(v["a"], double.NaN);
 
-			v["a"] = 123.12333f;
-			Assert.Equal<Single>(v["a"], 123.12333f);
-		}
+            v["a"] = -double.NaN;
+            Assert.Equal<double>(v["a"], -double.NaN);
+
+            v["a"] = float.Epsilon;
+            Assert.Equal<double>(v["a"], float.Epsilon);
+
+            v["a"] = 123.12333f;
+			Assert.Equal<float>(v["a"], 123.12333f);
+            
+            v["a"] = "";
+            Assert.Equal<string>(v["a"], "");
+
+            v["a"] = "ABCefg";
+            Assert.Equal<string>(v["a"], "ABCefg");
+
+            v["a"] = "АБВгде";
+            Assert.Equal<string>(v["a"], "АБВгде");
+
+            v["a"] = "AcciÃ³n";
+            Assert.Equal<string>(v["a"], "AcciÃ³n");
+
+            v["a"] = "\x11\x45";
+            Assert.Equal<string>(v["a"], "\x11\x45");
+        }
 
 		[Fact]
 		public void StringData()
 		{
-			JsonValue v = new JsonValue();
+			var v = new JsonValue();
 
-			string t = "";
+			string t;
 
 			t = "abc";
 			v["a"] = t;
@@ -79,7 +99,7 @@ namespace GJsonTests
 		[Fact]
 		public void ReadWrite()
 		{
-			JsonValue v = new JsonValue();
+			var v = new JsonValue();
 
 			v["a"] = 32;
 			v["d"]["a"] = "gfd";

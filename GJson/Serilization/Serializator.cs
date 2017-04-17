@@ -17,11 +17,7 @@ namespace GJson
 
 		public NameAttribute(string name)
 		{
-			Name = name;
-			if (String.IsNullOrEmpty(Name))
-			{
-				Name = String.Empty;
-			}
+			Name = (!string.IsNullOrEmpty(name)) ? name : string.Empty;
 		}
 	}
 
@@ -41,19 +37,19 @@ namespace GJson
 
 	public class Serializator
 	{
-		private static readonly Serializator Instance = new Serializator();
+	    static readonly Serializator _instance = new Serializator();
 
-		private readonly Dictionary<Type, Converter> _converters = new Dictionary<Type, Converter>();
-		private readonly Dictionary<Type, List<SerializeInfo>> _membersInfo = new Dictionary<Type, List<SerializeInfo>>();
+	    readonly Dictionary<Type, Converter> _converters = new Dictionary<Type, Converter>();
+	    readonly Dictionary<Type, List<SerializeInfo>> _membersInfo = new Dictionary<Type, List<SerializeInfo>>();
 
 		public static JsonValue Serialize(object obj)
 		{
-			return Instance.SerializeValue(obj);
+			return _instance.SerializeValue(obj);
 		}
 
 		public static T Deserialize<T>(JsonValue json)
 		{
-			return Instance.DeserializeValue<T>(json);
+			return _instance.DeserializeValue<T>(json);
 		}
 
 		public static T TryDeserialize<T>(JsonValue json)
@@ -74,7 +70,7 @@ namespace GJson
 			return result;
 		}
 
-		private JsonValue SerializeValue(object obj)
+	    JsonValue SerializeValue(object obj)
 		{
 			if (obj == null)
 				return new JsonValue();
@@ -118,61 +114,61 @@ namespace GJson
 			throw new Exception("Unknown type " + type.Name);
 		}
 
-		private JsonValue SerializePrimitive(object obj)
+	    static JsonValue SerializePrimitive(object obj)
 		{
-			if (obj is Boolean)
+			if (obj is bool)
 			{
-				return (Boolean)obj;
+				return (bool)obj;
 			}
-			else if (obj is Byte)
+			else if (obj is byte)
 			{
-				return (Byte)obj;
+				return (byte)obj;
 			}
-			else if (obj is SByte)
+			else if (obj is sbyte)
 			{
-				return (SByte)obj;
+				return (sbyte)obj;
 			}
-			else if (obj is Int16)
+			else if (obj is short)
 			{
-				return (Int16)obj;
+				return (short)obj;
 			}
-			else if (obj is UInt16)
+			else if (obj is ushort)
 			{
-				return (UInt16)obj;
+				return (ushort)obj;
 			}
-			else if (obj is Int32)
+			else if (obj is int)
 			{
-				return (Int32)obj;
+				return (int)obj;
 			}
-			else if (obj is UInt32)
+			else if (obj is uint)
 			{
-				return (UInt32)obj;
+				return (uint)obj;
 			}
-			else if (obj is Int64)
+			else if (obj is long)
 			{
-				return (Int64)obj;
+				return (long)obj;
 			}
-			else if (obj is UInt64)
+			else if (obj is ulong)
 			{
-				return (UInt64)obj;
+				return (ulong)obj;
 			}
-			else if (obj is Char)
+			else if (obj is char)
 			{
-				return (Char)obj;
+				return (char)obj;
 			}
-			else if (obj is Double)
+			else if (obj is double)
 			{
-				return (Double)obj;
+				return (double)obj;
 			}
-			else if (obj is Single)
+			else if (obj is float)
 			{
-				return (Single)obj;
+				return (float)obj;
 			}
 
 			throw new Exception("Unknown type");
 		}
 
-		private JsonValue SerializeObject(object obj)
+	    JsonValue SerializeObject(object obj)
 		{
 			if (obj == null)
 				return new JsonValue();
@@ -214,7 +210,7 @@ namespace GJson
 			return json;
 		}
 
-		private JsonValue SerializeArray(IEnumerable enumerable)
+	    JsonValue SerializeArray(IEnumerable enumerable)
 		{
 			if (enumerable == null)
 				return new JsonValue();
@@ -231,7 +227,7 @@ namespace GJson
 			return json;
 		}
 
-		private Converter FindConverter(Type type)
+	    Converter FindConverter(Type type)
 		{
 			Converter converter;
 			if (_converters.TryGetValue(type, out converter))
@@ -247,7 +243,7 @@ namespace GJson
 			return converter;
 		}
 
-		private T GetAttribute<T>(Type type) where T : Attribute
+	    T GetAttribute<T>(Type type) where T : Attribute
 		{
 			foreach (var attr in type.GetCustomAttributes(typeof(T), false))
 			{
@@ -257,10 +253,10 @@ namespace GJson
 			return null;
 		}
 
-		private class SerializeInfo
+	    class SerializeInfo
 		{
-			private readonly FieldInfo _fieldInfo;
-			private readonly PropertyInfo _propertyInfo;
+		    readonly FieldInfo _fieldInfo;
+		    readonly PropertyInfo _propertyInfo;
 
 			public SerializeInfo(FieldInfo fieldInfo)
 			{
@@ -309,7 +305,7 @@ namespace GJson
 						return _propertyInfo.Name;
 					}
 
-					return String.Empty;
+					return string.Empty;
 				}
 			}
 
@@ -357,7 +353,7 @@ namespace GJson
 			}
 		}
 
-		private List<SerializeInfo> GetMembers(Type type)
+	    List<SerializeInfo> GetMembers(Type type)
 		{
 			List<SerializeInfo> result;
 			if (_membersInfo.TryGetValue(type, out result))
@@ -393,7 +389,7 @@ namespace GJson
 			return result;
 		}
 
-		private T DeserializeValue<T>(JsonValue json)
+	    T DeserializeValue<T>(JsonValue json)
 		{
 			if (json == null
 			    || json.JsonType == JsonType.Null)
@@ -406,7 +402,7 @@ namespace GJson
 			return (T)result;
 		}
 
-		private object DeserializeValue(JsonValue json, Type type)
+	    object DeserializeValue(JsonValue json, Type type)
 		{
 			if (json == null
 			    || json.JsonType == JsonType.Null)
@@ -457,61 +453,61 @@ namespace GJson
 			throw new Exception("Unknown type");
 		}
 
-		private object DeserializePrimitive(JsonValue json, Type type)
+	    object DeserializePrimitive(JsonValue json, Type type)
 		{
-			if (type == typeof(Boolean))
+			if (type == typeof(bool))
 			{
-				return (Boolean)json;
+				return (bool)json;
 			}
-			else if (type == typeof(Byte))
+			else if (type == typeof(byte))
 			{
-				return (Byte)json;
+				return (byte)json;
 			}
-			else if (type == typeof(SByte))
+			else if (type == typeof(sbyte))
 			{
-				return (SByte)json;
+				return (sbyte)json;
 			}
-			else if (type == typeof(Int16))
+			else if (type == typeof(short))
 			{
-				return (Int16)json;
+				return (short)json;
 			}
-			else if (type == typeof(UInt16))
+			else if (type == typeof(ushort))
 			{
-				return (UInt16)json;
+				return (ushort)json;
 			}
-			else if (type == typeof(Int32))
+			else if (type == typeof(int))
 			{
-				return (Int32)json;
+				return (int)json;
 			}
-			else if (type == typeof(UInt32))
+			else if (type == typeof(uint))
 			{
-				return (UInt32)json;
+				return (uint)json;
 			}
-			else if (type == typeof(Int64))
+			else if (type == typeof(long))
 			{
-				return (Int64)json;
+				return (long)json;
 			}
-			else if (type == typeof(UInt64))
+			else if (type == typeof(ulong))
 			{
-				return (UInt64)json;
+				return (ulong)json;
 			}
-			else if (type == typeof(Char))
+			else if (type == typeof(char))
 			{
-				return (Char)json;
+				return (char)json;
 			}
-			else if (type == typeof(Double))
+			else if (type == typeof(double))
 			{
-				return (Double)json;
+				return (double)json;
 			}
-			else if (type == typeof(Single))
+			else if (type == typeof(float))
 			{
-				return (Single)json;
+				return (float)json;
 			}
 
 			throw new Exception("Unknown type");
 		}
 
-		private object DeserializeArray(JsonValue json, Type type)
+	    object DeserializeArray(JsonValue json, Type type)
 		{
 			if (json == null
 			    || json.JsonType == JsonType.Null)
@@ -588,7 +584,7 @@ namespace GJson
 			throw new Exception("Unknown type");
 		}
 
-		private object DeserializeObject(JsonValue json, Type type)
+	    object DeserializeObject(JsonValue json, Type type)
 		{
 			if (json == null
 			    || json.JsonType == JsonType.Null)
@@ -605,7 +601,7 @@ namespace GJson
 
 				var nameAttribute = member.GetCustomAttribute<NameAttribute>();
 				if (nameAttribute != null
-				    && !String.IsNullOrEmpty(nameAttribute.Name))
+				    && !string.IsNullOrEmpty(nameAttribute.Name))
 				{
 					name = nameAttribute.Name;
 				}

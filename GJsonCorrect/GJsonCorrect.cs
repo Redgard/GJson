@@ -6,9 +6,9 @@ namespace GJsonCorrect
 {
 	public partial class GJsonCorrectForm : Form
 	{
-		private const string KTestFile = "test.json";
+	    const string KTestFile = "test.json";
 
-		private readonly GJsonCorrectFormController _controller;
+	    readonly GJsonCorrectFormController _controller;
 
 		public GJsonCorrectForm()
 		{
@@ -28,7 +28,7 @@ namespace GJsonCorrect
 			StatusText.Text = txt;
 		}
 
-		private void InputBox_TextChanged(object sender, EventArgs e)
+	    void InputBox_TextChanged(object sender, EventArgs e)
 		{
 			_controller.OnTextChanged();
 		}

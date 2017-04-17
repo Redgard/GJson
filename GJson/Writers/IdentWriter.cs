@@ -5,7 +5,7 @@ namespace GJson
 {
 	public class IdentWriter : DefaultWriter
 	{
-		private int _ident;
+	    int _ident;
 
 		public bool Ident { set; get; }
 		public bool SingleLineArray { set; get; }
@@ -18,7 +18,7 @@ namespace GJson
 			Ident = true;
 		}
 
-		private void WriteNewLine()
+	    void WriteNewLine()
 		{
 			if (Ident)
 			{
@@ -27,7 +27,7 @@ namespace GJson
 			}
 		}
 
-		private void WriteIdent()
+	    void WriteIdent()
 		{
 			for (int i = 0; i < _ident; ++i)
 			{
@@ -35,12 +35,12 @@ namespace GJson
 			}
 		}
 
-		private void IncreaseIdent()
+	    void IncreaseIdent()
 		{
 			_ident++;
 		}
 
-		private void DecreaseIdent()
+	    void DecreaseIdent()
 		{
 			_ident--;
 		}
@@ -82,7 +82,7 @@ namespace GJson
 			}
 		}
 
-		private void WriteObjectPair(KeyValuePair<string, JsonValue> pair)
+	    void WriteObjectPair(KeyValuePair<string, JsonValue> pair)
 		{
 			Write(StringConstants.QuotationMark);
 			Write(pair.Key);

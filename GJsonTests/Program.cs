@@ -22,9 +22,11 @@ namespace GJsonTests
 			return File.ReadAllText(KFilesPath + fileName);
 		}
 
-		private static void Main()
-		{
-			var json = JsonValue.Parse(ReadFile("test.json"));
+	    static void Main()
+	    {
+            new Tests().SimpleData();
+
+            var json = JsonValue.Parse(ReadFile("test.json"));
 
 			var writer = new IdentWriter();
 			writer.SingleLineArray = true;

@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace GJson
 {
-	internal class ParserStack<T> : Stack<T>
+    class ParserStack<T> : Stack<T>
 	{
 		public T Result
 		{
@@ -20,51 +20,51 @@ namespace GJson
 
 	partial class Parser
 	{
-		private readonly ParserStack<JsonValue> _stack = new ParserStack<JsonValue>();
+	    readonly ParserStack<JsonValue> _stack = new ParserStack<JsonValue>();
 
 		public JsonValue Result
 		{
 			get { return _stack.Result; }
 		}
 
-		private void PushEmpty()
+	    void PushEmpty()
 		{
 			_stack.Push(JsonValue.CreateNull());
 		}
 
-		private void PushEmptyArray()
+	    void PushEmptyArray()
 		{
 			_stack.Push(JsonValue.CreateEmptyArray());
 		}
 
-		private void PushEmptyOBject()
+	    void PushEmptyOBject()
 		{
 			_stack.Push(JsonValue.CreateEmptyObject());
 		}
 
-		private void PushString(string value)
+	    void PushString(string value)
 		{
 			value = value.Substring(1, value.Length - 2);
 
 			_stack.Push(value);
 		}
 
-		private void PushTrue()
+	    void PushTrue()
 		{
 			_stack.Push(true);
 		}
 
-		private void PushFalse()
+	    void PushFalse()
 		{
 			_stack.Push(false);
 		}
 
-		private void PushDouble(string value)
+	    void PushDouble(string value)
 		{
 			_stack.Push(Convert.ToDouble(value, CultureInfo.InvariantCulture));
 		}
 
-		private void AddItemToObject()
+	    void AddItemToObject()
 		{
 			var value = _stack.Pop();
 			var key = _stack.Pop();
@@ -72,7 +72,7 @@ namespace GJson
 			obj.AsObject.Add(key, value);
 		}
 
-		private void AddItemToArray()
+	    void AddItemToArray()
 		{
 			var value = _stack.Pop();
 			var obj = _stack.Peek();

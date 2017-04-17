@@ -1,6 +1,5 @@
 
 using System;
-using System.IO;
 using System.Collections;
 
 namespace GJson {
@@ -19,8 +18,8 @@ public class Token
 public class Buffer
 {
 	public const int EOF = char.MaxValue + 1;
-	private readonly string _s;
-	private int _bufPos;
+    readonly string _s;
+    int _bufPos;
 
 	public Buffer(string s)
 	{
@@ -105,8 +104,8 @@ public class Scanner
 		buffer = new Buffer(inputString);
 		Init();
 	}
-	
-	private void Init()
+
+    void Init()
 	{
 		pos = -1;
 		line = 1;
@@ -343,11 +342,11 @@ public class Scanner
 				else {goto case 0;}
 
 		}
-		t.val = new String(tval, 0, tlen);
+		t.val = new string(tval, 0, tlen);
 		return t;
 	}
-	
-	private void SetScannerBehindT() 
+
+    void SetScannerBehindT() 
 	{
 		buffer.Pos = t.pos;
 		NextCh();

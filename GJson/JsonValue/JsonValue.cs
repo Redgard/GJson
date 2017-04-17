@@ -5,25 +5,25 @@ namespace GJson
 {
 	public sealed partial class JsonValue
 	{
-		private void ConvertToArray()
+	    void ConvertToArray()
 		{
-			if (_type == JsonType.Array)
-				return;
-
-			_type = JsonType.Array;
-			_list = new List<JsonValue>();
+	        if (_type != JsonType.Array)
+	        {
+	            _type = JsonType.Array;
+	            _list = new List<JsonValue>();
+	        }
 		}
 
-		private void ConvertToObject()
-		{
-			if (_type == JsonType.Object)
-				return;
+	    void ConvertToObject()
+	    {
+	        if (_type != JsonType.Object)
+	        {
+	            _type = JsonType.Object;
+	            _dict = new Dictionary<string, JsonValue>();
+	        }
+	    }
 
-			_type = JsonType.Object;
-			_dict = new Dictionary<string, JsonValue>();
-		}
-
-		public JsonValue this[int index]
+	    public JsonValue this[int index]
 		{
 			get
 			{
@@ -89,8 +89,10 @@ namespace GJson
 				{
 					case JsonType.Object:
 						return _dict.Count;
+
 					case JsonType.Array:
 						return _list.Count;
+
 					default:
 						return 0;
 				}

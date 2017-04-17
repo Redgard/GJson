@@ -4,12 +4,12 @@ namespace GJson
 {
 	public partial class JsonValue
 	{
-		private JsonType _type = JsonType.Null;
-		private string _string;
-		private bool? _bool;
-		private double? _real;
-		private List<JsonValue> _list;
-		private Dictionary<string, JsonValue> _dict;
+	    JsonType _type = JsonType.Null;
+	    string _string;
+	    bool? _bool;
+	    double? _real;
+	    List<JsonValue> _list;
+	    Dictionary<string, JsonValue> _dict;
 
 		public JsonType JsonType
 		{

@@ -41,9 +41,7 @@ namespace GJson
 			Data = data;
 
 			if (BreakOnException)
-			{
 				Debugger.Break();
-			}
 		}
 	}
 }
