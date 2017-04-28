@@ -43,7 +43,10 @@ namespace GJsonTests
 
             v["a"] = 123.12333f;
 			Assert.Equal<float>(v["a"], 123.12333f);
-            
+
+		    v["a"] = long.MaxValue;
+            Assert.Equal<float>(v["a"], long.MaxValue);
+
             v["a"] = "";
             Assert.Equal<string>(v["a"], "");
 
@@ -100,7 +103,7 @@ namespace GJsonTests
 		public void ReadWrite()
 		{
 			var v = new JsonValue();
-
+            
 			v["a"] = 32;
 			v["d"]["a"] = "gfd";
 			v["e"]["a"] = "gfd";
@@ -109,8 +112,9 @@ namespace GJsonTests
 			v["f"][0] = "gfd";
 			v["f"][1]["a"] = 543.423;
 			v["f"][1]["b"] = 43242342;
-			v["f"][1]["c"] = 1111111.2;
-			v["f"][2] = false;
+            v["f"][1]["c"] = 1111111.2;
+            v["f"][1]["d"] = long.MaxValue;
+            v["f"][2] = false;
 
 			var s1 = v.ToStringIdent();
 			var v2 = JsonValue.Parse(s1);

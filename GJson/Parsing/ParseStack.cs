@@ -59,9 +59,14 @@ namespace GJson
 			_stack.Push(false);
 		}
 
-	    void PushDouble(string value)
-		{
-			_stack.Push(Convert.ToDouble(value, CultureInfo.InvariantCulture));
+	    void PushNumber(string value)
+	    {
+	        var real = Convert.ToDouble(value, CultureInfo.InvariantCulture);
+            if (Math.Abs(real - Math.Truncate(real)) < double.Epsilon
+                && Math.Abs(real) <= long.MaxValue)
+                _stack.Push(Convert.ToInt64(value));
+            else
+                _stack.Push(real);
 		}
 
 	    void AddItemToObject()
@@ -102,7 +107,7 @@ namespace GJson
 					break;
 
 				case ENonTerminal.Number:
-					PushDouble(CurrentToken);
+					PushNumber(CurrentToken);
 					break;
 
 				case ENonTerminal.True:

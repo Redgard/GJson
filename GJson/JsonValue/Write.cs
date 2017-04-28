@@ -30,9 +30,9 @@
 
 				case JsonType.Boolean:
 
-					writer.WriteBoolean(_bool.GetValueOrDefault());
+                    writer.WriteBoolean(AsBool());
 
-					break;
+                    break;
 
 				case JsonType.String:
 
@@ -42,7 +42,10 @@
 
 				case JsonType.Number:
 
-					writer.WriteNumber(_real.GetValueOrDefault());
+			        if (_long.HasValue)
+			            writer.WriteLong(_long.Value);
+			        else
+                        writer.WriteReal(_real.GetValueOrDefault());
 
 					break;
 

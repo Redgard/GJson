@@ -24,8 +24,6 @@ namespace GJsonTests
 
 	    static void Main()
 	    {
-            new Tests().SimpleData();
-
             var json = JsonValue.Parse(ReadFile("test.json"));
 
 			var writer = new IdentWriter();

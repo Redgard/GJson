@@ -34,11 +34,16 @@ namespace GJson
 			}
 		}
 
-		public virtual void WriteNumber(double value)
-		{
-			Write(value);
-		}
+	    public void WriteReal(double value)
+	    {
+	        Write(value);
+	    }
 
+	    public void WriteLong(long value)
+	    {
+            Write(value);
+        }
+        
 		public virtual void WriteObject(JsonValue value)
 		{
 			Write(StringConstants.CurlyBracketOpen);
