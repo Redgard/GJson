@@ -32,7 +32,9 @@ namespace GJsonTests
 
 			json.Write(writer);
 
-			Console.WriteLine(writer);
+	        Serialization();
+
+            Console.WriteLine(writer);
 
 			Console.ReadKey();
 		}

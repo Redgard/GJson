@@ -21,41 +21,61 @@ namespace GJsonTests
 
 	    class A
 		{
-		    MyEnum? _ttt = MyEnum.Q;
-			//Dictionary<string, int> oo = new Dictionary<string, int>
-			//{
-			//    {"q1", 2},
-			//    {"w1", 432}
-			//};
+            public enum MyEnum
+            {
+                Q,
+                W,
+                E
+            }
 
+            double _gfd = 32.33;
+
+            public object Objk = new object();
+
+	        public JsonValue Jj = JsonValue.Parse("[2]");
+
+            public Dictionary<string, int> Oo = new Dictionary<string, int>
+			{
+			    {"q1", 2},
+			    {"w1", 432}
+			};
+
+	        public Dictionary<object, C> Cdict = new Dictionary<object, C>
+	        {
+	            {
+	                new Dictionary<C, C>
+	                {
+	                    {new C(), new C()}
+	                },
+	                new C()
+	            },
+	            {"", new C()}
+	        };
+
+            public MyEnum? Ttt = MyEnum.E;
+	        public MyEnum? Ttt2 = null;
+            
 			[Name("QQQ"), Converter(typeof(Myconverter))]
 			public int T
 			{
 				get { return 1; }
 			}
 
-			[Name("")] string _hh = "fdsfds";
-
-		    enum MyEnum
-			{
-				Q,
-				W,
-				E
-			}
-
-
-		    double _gfd = 32.33;
-
-			[Ignore] double _eerr22 = 32.33;
+			[Name("NEW_STR_nAmE")]
+            public string Hh = "fdsfds";
+            
+			[Ignore]
+            public double Eerr22 = 32.33;
 
 			//[Converter( typeof( BCONVERTER_2 ) )]
-		    B _b = new B();
+		    public B Bghg = new B();
 
-			[Name("C___C")] C _c = new C();
+			[Name("C___C")]
+            public C Ctty = new C();
 
-		    List<string> _strlis = new List<string> {"fds", "fd222"};
+            public List<string> Strlis = new List<string> {"fds", "fd222"};
 
-		    List<C> _clist = new List<C> {new C(), new C(), new C()};
+            public List<C> Clist = new List<C> {new C(), new C(), new C()};
 		}
 
 		[Converter(typeof(Bconverter))]
@@ -91,26 +111,28 @@ namespace GJsonTests
 
 	    class C
 		{
-			public int A = 1;
-			public int B = 2;
-			public string c = "STR__33";
+			public int Ai = 1;
+			public int Bi = 2;
+			public string Cs = "STR__33";
 		}
 
 		//[Fact]
-		public void Serialization()
+		public static void Serialization()
 		{
 			var a = new A();
 			var json = Serializator.Serialize(a);
 
-			Console.WriteLine(json.ToStringIdent());
+		    var jsonString = json.ToStringIdent();
+            Console.WriteLine(jsonString);
 
-			a = Serializator.Deserialize<A>(json);
+			var deserealizedA = Serializator.Deserialize<A>(json);
 
 			json = Serializator.Serialize(a);
 
-			Console.WriteLine(json.ToStringIdent());
+            jsonString = json.ToStringIdent();
+            Console.WriteLine(jsonString);
 
-			var tl = new List<C> {new C() {A = 1, B = 2}, new C() {A = 3, B = 4}};
+			var tl = new List<C> {new C {Ai = 1, Bi = 2}, new C {Ai = 3, Bi = 4}};
 			json = Serializator.Serialize(tl);
 
 			Console.ReadKey();
