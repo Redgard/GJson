@@ -1,4 +1,5 @@
 # GJson
+[![NuGet version](https://badge.fury.io/nu/GJson.svg)](https://badge.fury.io/nu/GJson)
 
 User-friendly json C# library with serilization on .NET 3.0
 
