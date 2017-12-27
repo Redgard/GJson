@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
+    <metadata minClientVersion="3.0">
+        <id>GJson</id>
+        <version>1.0.1</version>
+        <title>User-friendly json library with serilization</title>
+        <authors>Lartsov Ivan</authors>
+        <licenseUrl>https://github.com/lis355/GJson/blob/master/LICENSE</licenseUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>User-friendly json C# library with serilization on .NET 3.0
+
+Easy load and dump
+Easy manipulating, no need to create objects yourself with many "new"
+Support serilization</description>
+        <tags>json</tags>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System" targetFramework="" />
+        </frameworkAssemblies>
+    </metadata>
+    <files>
+        <file src="lib\net30\GJson.dll" target="lib\net30\GJson.dll" />
+    </files>
+</package>
